@@ -9,6 +9,7 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 import MapView from 'react-native-maps';
+import { Marker } from 'react-native-maps';
 
 
 type Props = {};
@@ -28,24 +29,70 @@ const styles=StyleSheet.create({
 
 
 export default class App extends Component<Props> {
-
+  state = {
+    region: {
+      latitude: 42.055214,
+      longitude: -87.674894,
+      latitudeDelta: 0.0222,
+      longitudeDelta: 0.0221,
+    },
+    markers: [
+      {
+        key: '1',
+        coordinate: {
+          latitude: 42.053472, 
+          longitude: -87.672652,
+        },
+        title: "Person A",
+        description: "This is the location of Person A",
+      },
+      {
+        key: '2',
+        coordinate: {
+          latitude: 42.058053, 
+          longitude: -87.675137, 
+        },
+        title: "Person B",
+        description: "This is the location of Person B",
+      },
+      {
+        key: '3',
+        coordinate: {
+          latitude: 42.067079,  
+          longitude: -87.692223,
+        },
+        title: "Person C",
+        description: "This is the location of Person C",
+      },
+    ],
+    
+  };
 
   render() {
+
     return (
       <View style={styles.container}>
      <MapView
-     style={styles.map}
-    initialRegion={{
-      latitude: 42.055214,
-      longitude:  -87.674894,
-      latitudeDelta: 0.0222,
-      longitudeDelta: 0.0221,
-    }}
-  />
-  </View>
+      showsUserLocation={true}
+      showsCompass={true}
+      style={styles.map}
+      initialRegion={this.state.region}
+    >
+      {this.state.markers.map(marker => (
+        <Marker
+          key = {marker.key}
+          coordinate={marker.coordinate}
+          title={marker.title}
+          description={marker.description}
+        />
+      ))}
+    </MapView>
+    </View>
+
 
     );
   }
 }
+
 
 
