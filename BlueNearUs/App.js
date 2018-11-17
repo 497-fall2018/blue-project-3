@@ -65,6 +65,17 @@ export default class App extends Component<Props> {
         description: "This is the location of Person C",
       },
     ],
+
+    centroid: [{
+      key: '0',
+      coordinate: {
+          latitude: 42.062245,  
+          longitude: -87.677697, 
+        },
+        title: "Your Optimized Hangout Spot!",
+        pinColor: "#8B008B",
+        description: "This is the centroid of your locations! :)",
+    }],
     
   };
 
@@ -86,6 +97,17 @@ export default class App extends Component<Props> {
           description={marker.description}
         />
       ))}
+
+      {this.state.centroid.map(c => (
+        <Marker
+          key = {c.key}
+          coordinate={c.coordinate}
+          title={c.title}
+          description={c.description}
+          pinColor={c.pinColor}
+        />
+      ))}
+
     </MapView>
     </View>
 
