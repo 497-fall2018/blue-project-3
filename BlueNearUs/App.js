@@ -31,6 +31,11 @@ const styles=StyleSheet.create({
 export default class App extends Component<Props> {
   
   state = {
+    latitude: null,
+    longitude: null,
+    user_lat:42.057989,
+    user_long:-87.675641,
+    error: null,
     region: {
       latitude: 42.055214,
       longitude: -87.674894,
@@ -77,12 +82,30 @@ export default class App extends Component<Props> {
         pinColor: "#8B008B",
         description: "This is the centroid of your locations! :)",
     }],
+    your_location: [{
+      key: '99',
+      coordinate: {
+          latitude: 42.057989,   
+          longitude: -87.675641, 
+        },
+        title: "Your Location",
+        pinColor: "#00ff00",
+        description: "This is where you are!",
+    }],
+
     
   };
 
   rad2degr(rad) { return rad * 180 / Math.PI; }
   degr2rad(degr) { return degr * Math.PI / 180; }
 
+//Norris: 42.053472, -87.672652
+//Tech: 42.058053, -87.675137
+//Mudd: 42.058320, -87.674434
+//Welsh-Ryan: 42.067079, -87.692223
+//E2: 42.052071, -87.684719
+//EP: 42.049022, -87.677566
+//The Garage: 42.059412, -87.673223
   getLatLngCenter(latLngInDegr) {
     var LATIDX = 0;
     var LNGIDX = 1;
@@ -122,21 +145,41 @@ export default class App extends Component<Props> {
     for (i=0;i<this.state.markers.length;i++) {
       coordinates.push([this.state.markers[i].coordinate.latitude,this.state.markers[i].coordinate.longitude]);
     }
+    if (this.state.latitude!=null && this.state.latitude!=null){
+    coordinates.push([this.state.user_lat, this.state.user_long]);}
     console.log(coordinates);
     answer=this.getLatLngCenter(coordinates);
     console.log(answer[0],answer[1]);
     return answer;
   }
 
-
+ 
 
   render() {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        this.setState({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          error: null,
+        });
+      },
+      (error) => this.setState({ error: error.message }),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
+    );
+    console.log("This is your location...");
+    console.log(this.state.latitude,this.state.longitude);
     centroid_coords=this.calculateCentroid();
     const latlng={
     latitude: centroid_coords[0],
     longitude: centroid_coords[1],
 }
+    const latlng2= {
+      latitude: this.state.latitude,
+      longitude: this.state.longitude,
+    }
     return (
+
       <View style={styles.container}>
      <MapView
       showsUserLocation={true}
@@ -144,6 +187,7 @@ export default class App extends Component<Props> {
       style={styles.map}
       initialRegion={this.state.region}
     >
+    
       {this.state.markers.map(marker => (
         <Marker
           key = {marker.key}
@@ -163,6 +207,16 @@ export default class App extends Component<Props> {
         />
       ))}
 
+      {this.state.your_location.map(y => (
+        <Marker
+          key = {y.key}
+          coordinate={y.coordinate}
+          title={y.title}
+          description={y.description}
+          pinColor={y.pinColor}
+        />
+      ))}
+    
     </MapView>
     </View>
 
