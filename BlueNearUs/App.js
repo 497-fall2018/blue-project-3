@@ -31,7 +31,7 @@ export default class App extends Component<Props> {
       latitude: 42.055214,
       longitude: -87.674894,
       latitudeDelta: 0.0222,
-      longitudeDelta: 0.0221,
+      longitudeDelta: 0.0421,
     },
     markers: [
       {
@@ -41,16 +41,16 @@ export default class App extends Component<Props> {
           longitude: -87.672652,
         },
         title: "Person A",
-        description: "This is the location of Person A",
+        description: "Norris",
       },
       {
         key: '2',
         coordinate: {
-          latitude: 42.058053, 
-          longitude: -87.675137, 
+          latitude: 42.05228, 
+          longitude: -87.688912, 
         },
         title: "Person B",
-        description: "This is the location of Person B",
+        description: "Emerson St",
       },
       {
         key: '3',
@@ -59,25 +59,25 @@ export default class App extends Component<Props> {
           longitude: -87.692223,
         },
         title: "Person C",
-        description: "This is the location of Person C",
+        description: "Welsh-Ryan",
       },
     ],
 
     centroid: [{
       key: '0',
       coordinate: {
-          latitude: 42.062245,  
-          longitude: -87.677697, 
+          latitude: 42.057705,  
+          longitude: -87.682356, 
         },
         title: "Your Optimized Hangout Spot!",
         pinColor: "#8B008B",
-        description: "This is the centroid of your locations! :)",
+        description: "Sherman Ave :)",
     }],
     your_location: [{
       key: '99',
       coordinate: {
-          latitude: 42.057989,   
-          longitude: -87.675641, 
+          latitude: 42.057806,   
+          longitude: -87.675877, 
         },
         title: "Your Location",
         pinColor: "#00ff00",
@@ -89,14 +89,6 @@ export default class App extends Component<Props> {
 
   rad2degr(rad) { return rad * 180 / Math.PI; }
   degr2rad(degr) { return degr * Math.PI / 180; }
-
-//Norris: 42.053472, -87.672652
-//Tech: 42.058053, -87.675137
-//Mudd: 42.058320, -87.674434
-//Welsh-Ryan: 42.067079, -87.692223
-//E2: 42.052071, -87.684719
-//EP: 42.049022, -87.677566
-//The Garage: 42.059412, -87.673223
   getLatLngCenter(latLngInDegr) {
     var LATIDX = 0;
     var LNGIDX = 1;
@@ -138,6 +130,7 @@ export default class App extends Component<Props> {
     }
     if (this.state.latitude!=null && this.state.latitude!=null){
     coordinates.push([this.state.user_lat, this.state.user_long]);}
+    console.log("Centroid...");
     console.log(coordinates);
     answer=this.getLatLngCenter(coordinates);
     console.log(answer[0],answer[1]);
@@ -164,10 +157,6 @@ export default class App extends Component<Props> {
     latitude: centroid_coords[0],
     longitude: centroid_coords[1],
 }
-    const latlng2= {
-      latitude: this.state.latitude,
-      longitude: this.state.longitude,
-    }
     return (
 
       
