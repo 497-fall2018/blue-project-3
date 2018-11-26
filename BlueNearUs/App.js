@@ -10,6 +10,9 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
+import { Container, Header, Title, Fab, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Toast} from 'native-base';
+import { ToastButton } from './toast';
+
 
 
 type Props = {};
@@ -17,20 +20,40 @@ type Props = {};
 const styles=StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    height:400,
-    width:400,
+    // height:800,
+    // width:400,
     justifyContent: 'flex-end',
     alignItems: 'center'
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+    // marginTop: '50%'
+  },
+  header: {
+    ...StyleSheet.absoluteFillObject,
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
   },
 });
 
 
 export default class App extends Component<Props> {
+
+
+  // static navigationOptions = {
+  //   headerTitle: <Text> NearUS </Text>,
+  //   headerRight: (
+  //     <Button
+  //       onPress={() => alert('This is a button!')}
+  //       title="Info"
+  //       color="#fff"
+  //     />
+  //   ),
+  // };
   
   state = {
+    showToast: false,
     latitude: null,
     longitude: null,
     user_lat:42.057989,
@@ -49,7 +72,7 @@ export default class App extends Component<Props> {
           latitude: 42.053472, 
           longitude: -87.672652,
         },
-        title: "Person A",
+        title: "John",
         description: "This is the location of Person A",
       },
       {
@@ -58,7 +81,7 @@ export default class App extends Component<Props> {
           latitude: 42.058053, 
           longitude: -87.675137, 
         },
-        title: "Person B",
+        title: "Kelly",
         description: "This is the location of Person B",
       },
       {
@@ -180,11 +203,21 @@ export default class App extends Component<Props> {
     }
     return (
 
-      <View style={styles.container}>
+    <Container>
+    <Header>
+    <Left/>
+    <Body>
+      <Title>Header</Title>
+    </Body>
+    <Right />
+  </Header>
+
+    <View style={styles.container}>
      <MapView
       showsUserLocation={true}
       showsCompass={true}
       style={styles.map}
+      height={600}
       initialRegion={this.state.region}
     >
     
@@ -216,10 +249,37 @@ export default class App extends Component<Props> {
           pinColor={y.pinColor}
         />
       ))}
-    
     </MapView>
+
+    <View style={{padding:10}}>
+    <Text>Welcome to NearUs! Discover Friends Near You and Optimized Hangout Spot Instantly!</Text>
     </View>
 
+    <View style={{marginBottom: 10, marginRight:5, flexDirection: 'row'}}>
+      <Button bordered info iconLeft style={{padding:10, marginRight:20}}>
+        <Text>John</Text>
+      </Button>
+      <Button bordered info iconLeft style={{padding:10}}>
+        <Text>Kelly</Text>
+      </Button>
+      <Button dark style={{marginLeft:50, padding:10}}>
+            <Icon name='add'/>
+          </Button>
+    </View>
+
+
+
+     <Footer>
+          <FooterTab>
+          <Button full primary>
+        <Text>Update Map</Text>
+        </Button>
+          </FooterTab>
+        </Footer>
+    </View>
+
+
+    </Container>
 
     );
   }
