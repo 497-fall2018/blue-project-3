@@ -12,6 +12,7 @@ import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
 import { Container, Header, Title, Fab, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Toast} from 'native-base';
 import { ToastButton } from './toast';
+// import firebase from 'react-native-firebase';
 
 
 
@@ -53,6 +54,7 @@ export default class App extends Component<Props> {
   // };
   
   state = {
+    data: '',
     showToast: false,
     latitude: null,
     longitude: null,
@@ -72,7 +74,7 @@ export default class App extends Component<Props> {
           latitude: 42.053472, 
           longitude: -87.672652,
         },
-        title: "John",
+        title: "Tim Berners-Lee",
         description: "This is the location of Person A",
       },
       {
@@ -81,7 +83,7 @@ export default class App extends Component<Props> {
           latitude: 42.058053, 
           longitude: -87.675137, 
         },
-        title: "Kelly",
+        title: "Jordan Walke",
         description: "This is the location of Person B",
       },
       {
@@ -90,7 +92,7 @@ export default class App extends Component<Props> {
           latitude: 42.067079,  
           longitude: -87.692223,
         },
-        title: "Person C",
+        title: "Andrew Lee",
         description: "This is the location of Person C",
       },
     ],
@@ -176,22 +178,55 @@ export default class App extends Component<Props> {
     return answer;
   }
 
+
+
+
+// componentDidMount = () => {
+//       // GET People
+//       fetch('http://hinckley.cs.northwestern.edu/~rbi054/nearus_get.php').then(
+//       function(response) {
+//         if (response.status !== 200) {
+//           console.log('Problem in fetching');
+//           return;
+//         }
+//         response.text().then(function(data) {
+//           console.log(data);
+//           var people=data.split("\n");
+//           console.log(people[0]);
+//         });
+//       }); 
+
+//       var posting_data='New Guy, 42.062245,-87.677697';
+//       //Add Person
+//       fetch('http://hinckley.cs.northwestern.edu/~rbi054/nearus_post.php', {
+//       method: 'POST',
+//       headers: {
+//         Accept: 'application/json',
+//         'Content-Type': 'application/json',
+//       },
+//       body: posting_data,
+//     }).then((response) => {console.log(response)}).catch((error) => {
+//       console.error(error);
+//     });
+
+
+//    }
  
 
   render() {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        this.setState({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          error: null,
-        });
-      },
-      (error) => this.setState({ error: error.message }),
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
-    );
-    console.log("This is your location...");
-    console.log(this.state.latitude,this.state.longitude);
+    // navigator.geolocation.getCurrentPosition(
+    //   (position) => {
+    //     this.setState({
+    //       latitude: position.coords.latitude,
+    //       longitude: position.coords.longitude,
+    //       error: null,
+    //     });
+    //   },
+    //   (error) => this.setState({ error: error.message }),
+    //   { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
+    // );
+    // console.log("This is your location...");
+    // console.log(this.state.latitude,this.state.longitude);
     centroid_coords=this.calculateCentroid();
     const latlng={
     latitude: centroid_coords[0],
@@ -257,14 +292,18 @@ export default class App extends Component<Props> {
 
     <View style={{marginBottom: 10, marginRight:5, flexDirection: 'row'}}>
       <Button bordered info iconLeft style={{padding:10, marginRight:20}}>
-        <Text>John</Text>
+        <Text>Tim</Text>
+      </Button>
+      <Button bordered info iconLeft style={{marginRight: 20, padding:10}}>
+        <Text>Jordan</Text>
       </Button>
       <Button bordered info iconLeft style={{padding:10}}>
-        <Text>Kelly</Text>
+        <Text>Andrew</Text>
       </Button>
       <Button dark style={{marginLeft:50, padding:10}}>
             <Icon name='add'/>
           </Button>
+
     </View>
 
 
