@@ -21,6 +21,9 @@ npm i react-native-linear-gradient
 #Install native-base
 npm i native-base
 
+#Install react-native-emoji
+npm i react-native-emoji
+
 #Run on ios emulator
 react-native run-ios
 
