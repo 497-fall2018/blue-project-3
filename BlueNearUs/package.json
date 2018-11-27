@@ -7,8 +7,11 @@
     "test": "jest"
   },
   "dependencies": {
+    "native-base": "^2.8.1",
     "react": "16.6.1",
     "react-native": "^0.57.5",
+    "react-native-google-places": "^2.5.2",
+    "react-native-linear-gradient": "^2.5.2",
     "react-native-maps": "^0.22.1"
   },
   "devDependencies": {
