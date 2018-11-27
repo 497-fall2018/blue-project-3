@@ -4,24 +4,18 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import RNGooglePlaces from 'react-native-google-places';
 import { Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, Icon } from 'native-base'
 import LinearGradient from 'react-native-linear-gradient'
+import Emoji from 'react-native-emoji';
 type Props = {};
 const screen = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'rgb(245,245,245)',
     ...StyleSheet.absoluteFillObject
   },
-  scrollcontainer: {
-    position: 'absolute',
-    width: screen.width,
-    bottom: 0,
-    borderRadius: 4,
-    borderColor: '#d6d7da',
-    backgroundColor: '#ffffff'
-  },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 44,
+  btn: {
+    width: 60,
+    height: 60,
+    justifyContent: 'center'
   },
   map: {
     backgroundColor: 'transparent',
@@ -263,6 +257,16 @@ export default class App extends Component<Props> {
             <View style={{ ...StyleSheet.absoluteFillObject, top: 100, backgroundColor: 'rgb(245,245,245)' }} />
             <Content>
               <Card>
+                <CardItem style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', height: 80 }}>
+
+                  <Button rounded light style={styles.btn}><Emoji name="coffee" style={{ fontSize: 40 }} /></Button>
+                  <Button rounded light style={styles.btn}><Emoji name="pizza" style={{ fontSize: 40 }} /></Button>
+                  <Button rounded light style={styles.btn}><Emoji name="fork_and_knife" style={{ fontSize: 40 }} /></Button>
+                  <Button rounded light style={styles.btn}><Emoji name="parking" style={{ fontSize: 40 }} /></Button>
+
+                </CardItem>
+              </Card>
+              <Card>
                 <CardItem>
                   <Left>
                     <Thumbnail source={{ uri: 'http://www.stickpng.com/assets/images/5842997fa6515b1e0ad75adf.png' }} />
@@ -328,23 +332,6 @@ export default class App extends Component<Props> {
             </Content>
           </View>
         </Animated.ScrollView>
-        {/* <Animated.View style={{
-          width: "100%",
-          position: "absolute",
-          transform: [{
-            translateY: this.headerY
-          }],
-          flex: 1,
-          backgroundColor: 'transparent'
-        }}>
-          <Header androidStatusBarColor={'#81c784'} style={{backgroundColor:'#98e59b'}} backgroundColor={'#98e59b'}>
-          <Body>
-          <Title style={{color: 'white'}}>
-            McDonalds
-          </Title>
-          </Body>
-        </Header>
-        </Animated.View> */}
       </View>
 
 
