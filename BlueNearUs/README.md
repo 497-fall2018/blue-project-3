@@ -12,6 +12,15 @@ npm install -g react-native-cli
 #Install React Native
 npm install react-native
 
+#Install react-native-google-places
+npm i react-native-google-places
+
+#Install react-native-linear-gradient
+npm i react-native-linear-gradient
+
+#Install native-base
+npm i native-base
+
 #Run on ios emulator
 react-native run-ios
 
