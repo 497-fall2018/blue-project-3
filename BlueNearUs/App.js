@@ -250,13 +250,14 @@ export default class App extends Component<Props> {
             transform: [{ translateY: -100 }],
             width: screen.width,
             paddingHorizontal: 30,
-            paddingVertical: 20,
+            // paddingVertical: 20,
+            paddingTop: 20,
             backgroundColor: 'rgb(255,255,255)',
             borderRadius: 10,
             shadowColor: 'rgb(0,0,0)',
-            shadowRadius: 6,
-            shadowOffset: { width: 0, height: 0 },
-            shadowOpacity: 0.23
+            shadowRadius: 10,
+            shadowOffset: { width: 0, height: -9 },
+            shadowOpacity: 0.15
           }}>
             <View style={{ ...StyleSheet.absoluteFillObject, top: 100, backgroundColor: 'rgb(255,255,255)' }} />
             <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', height: 80, }}>
