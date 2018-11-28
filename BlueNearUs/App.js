@@ -29,16 +29,13 @@ export default class App extends Component<Props> {
 
   state = {
     getPlaces:true,
-    getPlaceMarkers:true,
-    coordinate_values:null,
     contents:[],
     latitude: null,
     longitude: null,
     user_lat: 42.057989,
     user_long: -87.675641,
     error: null,
-    result: null,
-    placeMarkerResult:[],
+    result: [],
     scroll: new Animated.Value(0),
     region: {
       latitude: 42.055214,
@@ -170,25 +167,19 @@ export default class App extends Component<Props> {
   }
 
   getPlaceMarkersFunc(){
-    var key_id = 123
-    if (this.state.getPlaceMarkers == true){
+    var key_id = 10
      this.state.result.map((item) => {
       RNGooglePlaces.lookUpPlaceByID(item.placeID)
       .then((placeCoords) => {
         //console.log(placeCoords)
-        this.state.placeMarkerResult = placeCoords;
-        var coordinate_values = {
-          latitude: this.state.placeMarkerResult.latitude,
-          longitude: this.state.placeMarkerResult.longitude,
-        };
           var marker = {
             key: key_id,
             coordinate : {
-              latitude: this.state.placeMarkerResult.latitude,
-              longitude: this.state.placeMarkerResult.longitude,
+              latitude: placeCoords.latitude,
+              longitude: placeCoords.longitude,
             },
-            title : this.state.placeMarkerResult.name,
-            description : this.state.placeMarkerResult.address,
+            title : placeCoords.name,
+            description : placeCoords.address,
             pinColor: "#336CFF",
           };
           this.state.contents.push(marker)
@@ -196,10 +187,6 @@ export default class App extends Component<Props> {
       })
       .catch((error) => console.log(error.message));
    });
-  }
- 
-  //return this.state.contents;
-  this.state.getPlaceMarkers = false;
 }
 
 
