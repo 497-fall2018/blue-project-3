@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Image, Dimensions, Platform, StyleSheet, Text, View, ScrollView, FlatList, Animated } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import RNGooglePlaces from 'react-native-google-places';
-import { Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, Icon } from 'native-base'
+import { Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, Icon, H3 } from 'native-base'
 import LinearGradient from 'react-native-linear-gradient'
 import Emoji from 'react-native-emoji';
 type Props = {};
@@ -260,6 +260,7 @@ export default class App extends Component<Props> {
             shadowOpacity: 0.15
           }}>
             <View style={{ ...StyleSheet.absoluteFillObject, top: 100, backgroundColor: 'rgb(255,255,255)' }} />
+            <Content style={{ alignSelf: 'center', paddingBottom: 20 }}><H3 style={{ color: 'rgb(74,74,74)' }}>Hangout Places</H3></Content>
             <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', height: 80, }}>
 
               <Button rounded light style={styles.btn}><Emoji name="coffee" style={{ fontSize: 40 }} /></Button>
