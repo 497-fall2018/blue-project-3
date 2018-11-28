@@ -5,6 +5,8 @@ import RNGooglePlaces from 'react-native-google-places';
 import { Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, Icon } from 'native-base'
 import LinearGradient from 'react-native-linear-gradient'
 import Emoji from 'react-native-emoji';
+import ResultCard from './resultCard.js'
+
 type Props = {};
 const screen = Dimensions.get('window');
 const styles = StyleSheet.create({
@@ -331,6 +333,7 @@ export default class App extends Component<Props> {
                   </Right>
                 </CardItem>
               </Card>
+              <ResultCard/>
             </Content>
           </View>
         </Animated.ScrollView>
