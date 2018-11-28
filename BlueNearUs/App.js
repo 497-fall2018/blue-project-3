@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
 export default class App extends Component<Props> {
 
   state = {
+    getPlaces:true,
     latitude: null,
     longitude: null,
     user_lat: 42.057989,
@@ -146,6 +147,7 @@ export default class App extends Component<Props> {
   }
 
   openSearchModal(lat, lon) {
+    if(this.state.getPlaces == true)
     RNGooglePlaces.getAutocompletePredictions('pizza', {
       type: 'establishments',
       latitude: lat,
@@ -155,7 +157,7 @@ export default class App extends Component<Props> {
       this.result = place;
       //console.log(place);
     }).catch(error => console.log(error.message));
-
+    this.state.getPlaces = false
 
   }
 
