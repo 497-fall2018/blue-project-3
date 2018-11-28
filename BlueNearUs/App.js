@@ -11,7 +11,6 @@ type Props = {};
 const screen = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'rgb(245,245,245)',
     ...StyleSheet.absoluteFillObject
   },
   btn: {
@@ -29,7 +28,7 @@ const styles = StyleSheet.create({
 export default class App extends Component<Props> {
 
   state = {
-    getPlaces:true,
+    getPlaces: true,
     latitude: null,
     longitude: null,
     user_lat: 42.057989,
@@ -149,16 +148,19 @@ export default class App extends Component<Props> {
   }
 
   openSearchModal(lat, lon) {
-    if(this.state.getPlaces == true)
-    RNGooglePlaces.getAutocompletePredictions('pizza', {
-      type: 'establishments',
-      latitude: lat,
-      longitude: lon,
-      radius: 10
-    }).then((place) => {
-      this.result = place;
-      //console.log(place);
-    }).catch(error => console.log(error.message));
+
+    if (this.state.getPlaces == true)
+      RNGooglePlaces.getAutocompletePredictions('pizza', {
+
+        type: 'establishments',
+        latitude: lat,
+        longitude: lon,
+        radius: 10
+      }).then((place) => {
+        this.result = place;
+        //console.log(place);
+      }).catch(error => console.log(error.message));
+
     this.state.getPlaces = false
 
   }
@@ -245,31 +247,30 @@ export default class App extends Component<Props> {
 
 
           </Animated.View>
-          <View style={{ position: 'absolute', height: screen.height * 0.8, width: '100%' }}>
-            <LinearGradient
-              colors={['rgba(245,245,245,0.0)', 'rgba(245,245,245,0.35)', 'rgba(245,245,245,1)']}
-              locations={[0, 0.7, 1]}
-              style={StyleSheet.absoluteFill} />
-          </View>
+
           <View style={{
             transform: [{ translateY: -100 }],
             width: screen.width,
             paddingHorizontal: 30,
-            paddingVertical: 20,
-            backgroundColor: 'transparent'
+            // paddingVertical: 20,
+            paddingTop: 20,
+            backgroundColor: 'rgb(255,255,255)',
+            borderRadius: 10,
+            shadowColor: 'rgb(0,0,0)',
+            shadowRadius: 10,
+            shadowOffset: { width: 0, height: -9 },
+            shadowOpacity: 0.15
           }}>
-            <View style={{ ...StyleSheet.absoluteFillObject, top: 100, backgroundColor: 'rgb(245,245,245)' }} />
+            <View style={{ ...StyleSheet.absoluteFillObject, top: 100, backgroundColor: 'rgb(255,255,255)' }} />
+            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', height: 80, }}>
+
+              <Button rounded light style={styles.btn}><Emoji name="coffee" style={{ fontSize: 40 }} /></Button>
+              <Button rounded light style={styles.btn}><Emoji name="pizza" style={{ fontSize: 40 }} /></Button>
+              <Button rounded light style={styles.btn}><Emoji name="fork_and_knife" style={{ fontSize: 40 }} /></Button>
+              <Button rounded light style={styles.btn}><Emoji name="parking" style={{ fontSize: 40 }} /></Button>
+
+            </View>
             <Content>
-              <Card>
-                <CardItem style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', height: 80 }}>
-
-                  <Button rounded light style={styles.btn}><Emoji name="coffee" style={{ fontSize: 40 }} /></Button>
-                  <Button rounded light style={styles.btn}><Emoji name="pizza" style={{ fontSize: 40 }} /></Button>
-                  <Button rounded light style={styles.btn}><Emoji name="fork_and_knife" style={{ fontSize: 40 }} /></Button>
-                  <Button rounded light style={styles.btn}><Emoji name="parking" style={{ fontSize: 40 }} /></Button>
-
-                </CardItem>
-              </Card>
               <Card>
                 <CardItem>
                   <Left>
