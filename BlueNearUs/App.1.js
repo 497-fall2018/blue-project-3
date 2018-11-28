@@ -2,15 +2,14 @@ import React, { Component } from 'react';
 import { Image, Dimensions, Platform, StyleSheet, Text, View, ScrollView, FlatList, Animated } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import RNGooglePlaces from 'react-native-google-places';
-import { Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, Icon, H3 } from 'native-base'
+import { Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, Icon } from 'native-base'
 import LinearGradient from 'react-native-linear-gradient'
 import Emoji from 'react-native-emoji';
-import ResultCard from './resultCard.js'
-
 type Props = {};
 const screen = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'rgb(245,245,245)',
     ...StyleSheet.absoluteFillObject
   },
   btn: {
@@ -162,7 +161,7 @@ export default class App extends Component<Props> {
       this.state.result = place;
       //console.log(place)
       this.getPlaceMarkersFunc()
-      console.log(this.state.contents)
+      //console.log(this.state.contents)
     }).catch(error => console.log(error.message));
    
     this.state.getPlaces = false
@@ -197,8 +196,6 @@ export default class App extends Component<Props> {
       .catch((error) => console.log(error.message));
    });
   }
- 
-  //return this.state.contents;
   this.state.getPlaceMarkers = false;
 }
 
@@ -227,8 +224,7 @@ export default class App extends Component<Props> {
 
      this.openSearchModal(latlng.latitude, latlng.longitude)
 
-     console.log(this.state.contents)
-     console.log(this.state.markers)
+    console.log(this.state.contents)
 
 
 
@@ -285,50 +281,107 @@ export default class App extends Component<Props> {
                 />
               ))}
                 {this.state.contents.map((item) => {
-                
                   <Marker
                   key={item.key}
                   coordinate= {item.coordinate}
                   title={item.title}
                   description={item.description}
                   pinColor={item.pinColor}
-                />
-              
-                  
+                />           
                 })}
 
             </MapView>
 
 
           </Animated.View>
-
+          <View style={{ position: 'absolute', height: screen.height * 0.8, width: '100%' }}>
+            <LinearGradient
+              colors={['rgba(245,245,245,0.0)', 'rgba(245,245,245,0.35)', 'rgba(245,245,245,1)']}
+              locations={[0, 0.7, 1]}
+              style={StyleSheet.absoluteFill} />
+          </View>
           <View style={{
             transform: [{ translateY: -100 }],
             width: screen.width,
             paddingHorizontal: 30,
-            // paddingVertical: 20,
-            paddingTop: 20,
-            backgroundColor: 'rgb(255,255,255)',
-            borderRadius: 10,
-            shadowColor: 'rgb(0,0,0)',
-            shadowRadius: 10,
-            shadowOffset: { width: 0, height: -9 },
-            shadowOpacity: 0.15
+            paddingVertical: 20,
+            backgroundColor: 'transparent'
           }}>
-            <View style={{ ...StyleSheet.absoluteFillObject, top: 100, backgroundColor: 'rgb(255,255,255)' }} />
-            <Content style={{ alignSelf: 'center', paddingBottom: 20 }}><H3 style={{ color: 'rgb(74,74,74)' }}>Hangout Places</H3></Content>
-            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', height: 80, }}>
-
-              <Button rounded light style={styles.btn}><Emoji name="coffee" style={{ fontSize: 40 }} /></Button>
-              <Button rounded light style={styles.btn}><Emoji name="pizza" style={{ fontSize: 40 }} /></Button>
-              <Button rounded light style={styles.btn}><Emoji name="fork_and_knife" style={{ fontSize: 40 }} /></Button>
-              <Button rounded light style={styles.btn}><Emoji name="parking" style={{ fontSize: 40 }} /></Button>
-
-            </View>
+            <View style={{ ...StyleSheet.absoluteFillObject, top: 100, backgroundColor: 'rgb(245,245,245)' }} />
             <Content>
-              <ResultCard/>
-              <ResultCard/>
-              <ResultCard/>
+              <Card>
+                <CardItem style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', height: 80 }}>
+
+                  <Button rounded light style={styles.btn}><Emoji name="coffee" style={{ fontSize: 40 }} /></Button>
+                  <Button rounded light style={styles.btn}><Emoji name="pizza" style={{ fontSize: 40 }} /></Button>
+                  <Button rounded light style={styles.btn}><Emoji name="fork_and_knife" style={{ fontSize: 40 }} /></Button>
+                  <Button rounded light style={styles.btn}><Emoji name="parking" style={{ fontSize: 40 }} /></Button>
+
+                </CardItem>
+              </Card>
+              <Card>
+                <CardItem>
+                  <Left>
+                    <Thumbnail source={{ uri: 'http://www.stickpng.com/assets/images/5842997fa6515b1e0ad75adf.png' }} />
+                    <Body>
+                      <Text>NativeBase</Text>
+                      <Text note>GeekyAnts</Text>
+                    </Body>
+                  </Left>
+                </CardItem>
+                <CardItem cardBody>
+                  <Image source={{ uri: 'https://www.dairyherd.com/sites/default/files/Pan%20Pizza%20Hut.jpg' }} style={{ height: 200, width: null, flex: 1 }} />
+                </CardItem>
+                <CardItem>
+                  <Left>
+                    <Button transparent>
+                      {/* <Icon active name="thumbs-up" /> */}
+                      <Text>12 Likes</Text>
+                    </Button>
+                  </Left>
+                  <Body>
+                    <Button transparent>
+                      {/* <Icon active name="chatbubbles" /> */}
+                      <Text>4 Comments</Text>
+                    </Button>
+                  </Body>
+                  <Right>
+                    <Text>11h ago</Text>
+                  </Right>
+                </CardItem>
+
+              </Card>
+              <Card>
+                <CardItem>
+                  <Left>
+                    <Thumbnail source={{ uri: 'http://www.stickpng.com/assets/images/5842997fa6515b1e0ad75adf.png' }} />
+                    <Body>
+                      <Text>NativeBase</Text>
+                      <Text note>GeekyAnts</Text>
+                    </Body>
+                  </Left>
+                </CardItem>
+                <CardItem cardBody>
+                  <Image source={{ uri: 'https://www.dairyherd.com/sites/default/files/Pan%20Pizza%20Hut.jpg' }} style={{ height: 200, width: null, flex: 1 }} />
+                </CardItem>
+                <CardItem>
+                  <Left>
+                    <Button transparent>
+                      {/* <Icon active name="thumbs-up" /> */}
+                      <Text>12 Likes</Text>
+                    </Button>
+                  </Left>
+                  <Body>
+                    <Button transparent>
+                      {/* <Icon active name="chatbubbles" /> */}
+                      <Text>4 Comments</Text>
+                    </Button>
+                  </Body>
+                  <Right>
+                    <Text>11h ago</Text>
+                  </Right>
+                </CardItem>
+              </Card>
             </Content>
           </View>
         </Animated.ScrollView>
