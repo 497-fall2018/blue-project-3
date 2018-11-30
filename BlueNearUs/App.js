@@ -28,7 +28,8 @@ const styles = StyleSheet.create({
 export default class App extends Component<Props> {
 
   state = {
-    getPlaces: true,
+    getPlaces:true,
+    contents:[],
     latitude: null,
     longitude: null,
     user_lat: 42.057989,
@@ -148,22 +149,45 @@ export default class App extends Component<Props> {
   }
 
   openSearchModal(lat, lon) {
-
-    if (this.state.getPlaces == true)
-      RNGooglePlaces.getAutocompletePredictions('pizza', {
-
-        type: 'establishments',
-        latitude: lat,
-        longitude: lon,
-        radius: 10
-      }).then((place) => {
-        this.result = place;
-        //console.log(place);
-      }).catch(error => console.log(error.message));
-
+    if(this.state.getPlaces == true)
+    RNGooglePlaces.getAutocompletePredictions('pizza', {
+      type: 'establishments',
+      latitude: lat,
+      longitude: lon,
+      radius: 10
+    }).then((place) => {
+      this.state.result = place;
+      //console.log(place)
+      this.getPlaceMarkersFunc()
+      console.log(this.state.contents)
+    }).catch(error => console.log(error.message));
+   
     this.state.getPlaces = false
 
   }
+
+  getPlaceMarkersFunc(){
+    var key_id = 10
+     this.state.result.map((item) => {
+      RNGooglePlaces.lookUpPlaceByID(item.placeID)
+      .then((placeCoords) => {
+        //console.log(placeCoords)
+          var marker = {
+            key: key_id,
+            coordinate : {
+              latitude: placeCoords.latitude,
+              longitude: placeCoords.longitude,
+            },
+            title : placeCoords.name,
+            description : placeCoords.address,
+            pinColor: "#336CFF",
+          };
+          this.state.contents.push(marker)
+          key_id = key_id + 1    
+      })
+      .catch((error) => console.log(error.message));
+   });
+}
 
 
 
@@ -188,7 +212,11 @@ export default class App extends Component<Props> {
       longitude: centroid_coords[1],
     }
 
-    this.openSearchModal(latlng.latitude, latlng.longitude)
+     this.openSearchModal(latlng.latitude, latlng.longitude)
+
+     console.log(this.state.contents)
+     console.log(this.state.markers)
+
 
 
     return (
@@ -243,6 +271,19 @@ export default class App extends Component<Props> {
                   pinColor={y.pinColor}
                 />
               ))}
+                {this.state.contents.map((item) => {
+                
+                  <Marker
+                  key={item.key}
+                  coordinate= {item.coordinate}
+                  title={item.title}
+                  description={item.description}
+                  pinColor={item.pinColor}
+                />
+              
+                  
+                })}
+
             </MapView>
 
 
