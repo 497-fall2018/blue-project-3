@@ -154,11 +154,11 @@ export default class App extends Component<Props> {
       type: 'establishments',
       latitude: lat,
       longitude: lon,
-      radius: 10
+      radius: 1
     }).then((place) => {
       this.state.result = place;
       //console.log(place)
-      this.getPlaceMarkersFunc()
+      this.getPlaceMarkersFunc();
       console.log(this.state.contents)
     }).catch(error => console.log(error.message));
    
@@ -171,7 +171,7 @@ export default class App extends Component<Props> {
      this.state.result.map((item) => {
       RNGooglePlaces.lookUpPlaceByID(item.placeID)
       .then((placeCoords) => {
-        //console.log(placeCoords)
+        console.log(placeCoords)
           var marker = {
             key: key_id,
             coordinate : {
@@ -182,7 +182,7 @@ export default class App extends Component<Props> {
             description : placeCoords.address,
             pinColor: "#336CFF",
           };
-          this.state.contents.push(marker)
+          this.state.contents.push(marker);
           key_id = key_id + 1    
       })
       .catch((error) => console.log(error.message));
@@ -271,18 +271,17 @@ export default class App extends Component<Props> {
                   pinColor={y.pinColor}
                 />
               ))}
-                {this.state.contents.map((item) => {
-                
-                  <Marker
-                  key={item.key}
-                  coordinate= {item.coordinate}
-                  title={item.title}
-                  description={item.description}
-                  pinColor={item.pinColor}
-                />
-              
-                  
-                })}
+              {this.state.contents.map((item) => (
+                <Marker
+                key={item.key}
+                coordinate= {item.coordinate}
+                title={item.title}
+                description={item.description}
+                pinColor={item.pinColor}
+              />
+
+
+              ))}
 
             </MapView>
 
@@ -313,9 +312,12 @@ export default class App extends Component<Props> {
 
             </View>
             <Content>
-              <ResultCard/>
-              <ResultCard/>
-              <ResultCard/>
+                {this.state.contents.map((item) => (
+                    <ResultCard
+                        name={item.title}
+                        note={item.description}
+                    />
+                ))}
             </Content>
           </View>
         </Animated.ScrollView>
