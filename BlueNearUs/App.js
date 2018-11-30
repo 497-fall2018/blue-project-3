@@ -185,13 +185,8 @@ export default class App extends Component<Props> {
             description : placeCoords.address,
             pinColor: "#336CFF",
           };
-<<<<<<< HEAD
-          this.state.contents.push(marker);
-          key_id = key_id + 1    
-=======
-          this.state.contents.push(marker)
-          key_id = key_id + 1
->>>>>>> 4f2e68128aff6304fdce3547187d1fdd348b57eb
+        this.state.contents.push(marker);
+        key_id = key_id + 1
       })
       .catch((error) => console.log(error.message));
    });
@@ -277,30 +272,15 @@ export default class App extends Component<Props> {
                   pinColor={y.pinColor}
                 />
               ))}
-<<<<<<< HEAD
-              {this.state.contents.map((item) => (
+            {this.state.contents.map((item) => (
                 <Marker
                 key={item.key}
                 coordinate= {item.coordinate}
                 title={item.title}
                 description={item.description}
                 pinColor={item.pinColor}
-              />
-
-
-              ))}
-
-=======
-                {this.state.contents.map(item => (
-                  <Marker
-                  key={item.key}
-                  coordinate= {item.coordinate}
-                  title={item.title}
-                  description={item.description}
-                  pinColor={item.pinColor}
-                />
-                ))}
->>>>>>> 4f2e68128aff6304fdce3547187d1fdd348b57eb
+            />
+            ))}
             </MapView>
             <Fab
                 active={this.state.active}
@@ -310,8 +290,16 @@ export default class App extends Component<Props> {
                 position="topRight"
                 onPress={() => this.setState({ active: !this.state.active })}>
                 <FontAwesome5 name={"user"} />
+                <Button style={{ backgroundColor: '#FE5D26' }}>
+                  <Text style={{fontSize: 20, color:"#EFFFFF"}}>A</Text>
+                </Button>
+                <Button style={{ backgroundColor: '#ff00bf' }}>
+                  <Text style={{fontSize: 20, color:"#EFFFFF"}}>B</Text>
+                </Button>
+                <Button style={{ backgroundColor: '#EA2525' }}>
+                  <Text style={{fontSize: 20, color:"#EFFFFF"}}>C</Text>
+                </Button>
                 <Button style={{ backgroundColor: '#34A34F' }}>
-              {/*<FontAwesome5 name={"plus"} />*/}
                   <Icon name="md-person-add" size={20} color="#EFFFFF"/>
                 </Button>
             </Fab>
