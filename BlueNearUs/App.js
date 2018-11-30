@@ -12,8 +12,15 @@ import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
 import { Container, Header, Title, Fab, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Toast} from 'native-base';
 import { ToastButton } from './toast';
+import firebase from 'firebase';
 // import firebase from 'react-native-firebase';
 
+
+var config = {
+  databaseURL: "https://nearus-222717.firebaseio.com",
+  projectId: "nearus-222717",
+};
+firebase.initializeApp(config);
 
 
 type Props = {};
@@ -160,6 +167,55 @@ export default class App extends Component<Props> {
 }
 
 
+writeUserData(name,lat,long,id){
+    firebase.database().ref('Users/'+id+'/'+name).set({
+        lat,
+        long,
+        name,
+    }).then((data)=>{
+        //success callback
+        console.log('data ' , data)
+    }).catch((error)=>{
+        //error callback
+        console.log('error ' , error)
+    })
+}
+
+
+//Function that creates empty channel 
+createNewChannel(id) {
+  firebase.database().ref('Users/'+id).set({
+    }).then((data)=>{
+        //success callback
+        console.log('data ' , data)
+    }).catch((error)=>{
+        //error callback
+        console.log('error ' , error)
+    })
+}
+
+
+readUserData(id) {
+    firebase.database().ref('Users/'+id).once('value', function (snapshot) {
+        console.log(snapshot.val())
+        
+        snapshot.forEach((child) => {
+        console.log(child.val().name,child.val().lat, child.val().long); 
+      });
+    });
+}
+
+
+
+// updateSingleData(name,lat,long){
+//     firebase.database().ref('Users/').update({
+//         lat,
+//         long,
+//     });
+// }
+
+
+
   calculateCentroid() {
     var coordinates=[];
     var answer;
@@ -181,36 +237,102 @@ export default class App extends Component<Props> {
 
 
 
-// componentDidMount = () => {
-//       // GET People
-//       fetch('http://hinckley.cs.northwestern.edu/~rbi054/nearus_get.php').then(
-//       function(response) {
-//         if (response.status !== 200) {
-//           console.log('Problem in fetching');
-//           return;
-//         }
-//         response.text().then(function(data) {
-//           console.log(data);
-//           var people=data.split("\n");
-//           console.log(people[0]);
-//         });
-//       }); 
+componentDidMount = () => {
+  this.createNewChannel("BlueTeam");
+  this.writeUserData("Tim", "42.053472", "-87.672652", "BlueTeam");
+  this.writeUserData("Jordan", "42.058053", "-87.675137", "BlueTeam");
+  this.writeUserData("Andrew", "42.067079", "-87.692223","BlueTeam");
+  this.writeUserData("Robbie","42.057989", "-87.675641","BlueTeam");
 
-//       var posting_data='New Guy, 42.062245,-87.677697';
-//       //Add Person
-//       fetch('http://hinckley.cs.northwestern.edu/~rbi054/nearus_post.php', {
-//       method: 'POST',
-//       headers: {
-//         Accept: 'application/json',
-//         'Content-Type': 'application/json',
-//       },
-//       body: posting_data,
-//     }).then((response) => {console.log(response)}).catch((error) => {
-//       console.error(error);
-//     });
+  this.createNewChannel("AquaTeam");
+  this.writeUserData("Tim", "42.053472", "-87.672652", "AquaTeam");
+  this.writeUserData("Jordan", "42.058053", "-87.675137", "AquaTeam");
+  this.writeUserData("Andrew", "42.067079", "-87.692223","AquaTeam");
 
 
-//    }
+  this.readUserData("BlueTeam");
+  this.readUserData("AquaTeam");
+      // GET People
+    //   fetch('http://hinckley.cs.northwestern.edu/~rbi054/nearus_get.php').then(
+    //   function(response) {
+    //     if (response.status !== 200) {
+    //       console.log('Problem in fetching');
+    //       return;
+    //     }
+    //     response.text().then(function(data) {
+    //       console.log(data);
+    //       var people=data.split("\n");
+    //       console.log(people[0]);
+    //     });
+    //   }); 
+
+    // var posting_data='New Guy,42.062245,-87.677697';
+
+
+    // //   //Add Person
+    //   fetch('http://hinckley.cs.northwestern.edu/~rbi054/nearus_post.php', {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/x-www-form-urlencoded',
+    //     'Content-Type': 'application/x-www-form-urlencoded',
+    //   },
+    //   body: 'New Guy,42.062245,-87.677697',
+    // }).then((response) => {console.log(response)}).catch((error) => {
+    //   console.error(error);
+    // });
+
+
+    // var request = new XMLHttpRequest();
+    // request.onreadystatechange = (e) => {
+    //   if (request.readyState !== 4) {
+    //     return;
+    //   }
+
+    //   if (request.status === 200) {
+    //     console.log('success', request.responseText);
+    //   } else {
+    //     console.warn('error');
+    //   }
+    // };
+
+
+    // request.open('POST', 'http://hinckley.cs.northwestern.edu/~rbi054/nearus_post.php', true);
+    // request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    // // request.setRequestHeader("Content-length", posting_data.length);
+    // request.send(posting_data);
+    // console.log(posting_data);
+
+
+    // var http = new XMLHttpRequest();
+    // var url = 'http://hinckley.cs.northwestern.edu/~rbi054/nearus_post.php';
+    // var params = 'hi';
+    // http.open('POST', url, true);
+
+    // //Send the proper header information along with the request
+    // http.setRequestHeader('Content-type', "application/x-www-form-urlencoded");
+
+    // http.onreadystatechange = function() {//Call a function when the state changes.
+    //     if(http.readyState == 4 && http.status == 200) {
+    //         alert("NearUs Location Shared!");
+    //     }
+    // }
+    // http.send(params);
+
+
+    // header = {"Content-Type": "application/json", data: body};
+
+    // fetch('http://hinckley.cs.northwestern.edu/~rbi054/nearus_post.php', {method: 'POST', body: posting_data})
+    // .then((response) => {
+    //     console.log(response)
+    // })
+    // .done();
+
+
+   }
+
+
+
+
  
 
   render() {

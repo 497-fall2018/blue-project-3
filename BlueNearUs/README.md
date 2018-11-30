@@ -5,3 +5,5 @@ AIzaSyBJj7Qjf-xOnVFfIh-vRg3fLd2EP9F2dVk
 
 # Android API key:
 AIzaSyA96PZ2hLf-dyxlyyrqcjPrrIFoeiQKpnM
+
+#npm install firebase --save
