@@ -12,6 +12,21 @@ npm install -g react-native-cli
 #Install React Native
 npm install react-native
 
+#Install react-native-google-places
+npm i react-native-google-places
+
+#Install react-native-linear-gradient
+npm i react-native-linear-gradient
+
+#Install native-base
+npm i native-base
+
+#Install react-native-emoji
+npm i react-native-emoji
+
+#Install react-native-vector-icons
+npm i react-native-vector-icons
+
 #Run on ios emulator
 react-native run-ios
 
@@ -25,11 +40,10 @@ npm install react-native-maps --save
 sudo gem install cocoapods
 
 #If any changes in pod file
-pod install 
+pod install
 
 -----------------------------------------
 Any error:
 
 rm -rf yarn.lock
 yarn
-
