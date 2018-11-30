@@ -24,6 +24,9 @@ npm i native-base
 #Install react-native-emoji
 npm i react-native-emoji
 
+#Install react-native-vector-icons
+npm i react-native-vector-icons
+
 #Run on ios emulator
 react-native run-ios
 
@@ -37,11 +40,10 @@ npm install react-native-maps --save
 sudo gem install cocoapods
 
 #If any changes in pod file
-pod install 
+pod install
 
 -----------------------------------------
 Any error:
 
 rm -rf yarn.lock
 yarn
-

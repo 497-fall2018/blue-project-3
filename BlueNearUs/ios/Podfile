@@ -41,6 +41,8 @@ target 'BlueNearUs' do
   pod 'Google-Maps-iOS-Utils' # Uncomment this line if you want to support GoogleMaps on iOS
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
 end
 
 post_install do |installer|
