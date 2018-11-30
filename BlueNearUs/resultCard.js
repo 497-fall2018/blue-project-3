@@ -3,6 +3,14 @@ import { Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, Icon } f
 import { Image, Dimensions, Platform, StyleSheet, Text, View, ScrollView, FlatList, Animated } from 'react-native';
 
 class ResultCard extends Component {
+    constructor(props){
+        super(props);
+        this.state={
+            isrc: "",
+            name:"",
+            note: "",
+        };
+    }
     render() {
         return (<Card>
                 <CardItem>
