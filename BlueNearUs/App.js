@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Image, Dimensions, Platform, StyleSheet, Text, View, ScrollView, FlatList, Animated } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import RNGooglePlaces from 'react-native-google-places';
-import { Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, H3 , Fab} from 'native-base'
+import { Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, H3, Fab } from 'native-base'
 import LinearGradient from 'react-native-linear-gradient'
 import Emoji from 'react-native-emoji';
 import ResultCard from './resultCard.js'
@@ -31,8 +31,8 @@ export default class App extends Component<Props> {
 
   state = {
     active: false,
-    getPlaces:true,
-    contents:[],
+    getPlaces: true,
+    contents: [],
     latitude: null,
     longitude: null,
     user_lat: 42.057989,
@@ -152,50 +152,45 @@ export default class App extends Component<Props> {
   }
 
   openSearchModal(lat, lon) {
-    if(this.state.getPlaces == true)
-    RNGooglePlaces.getAutocompletePredictions('pizza', {
-      type: 'establishments',
-      latitude: lat,
-      longitude: lon,
-      radius: 1
-    }).then((place) => {
-      this.state.result = place;
-      //console.log(place)
-      this.getPlaceMarkersFunc();
-      console.log(this.state.contents)
-    }).catch(error => console.log(error.message));
+    if (this.state.getPlaces == true)
+      RNGooglePlaces.getAutocompletePredictions('pizza', {
+        type: 'establishments',
+        latitude: lat,
+        longitude: lon,
+        radius: 1
+      }).then((place) => {
+        this.state.result = place;
+        //console.log(place)
+        this.getPlaceMarkersFunc();
+        console.log(this.state.contents)
+      }).catch(error => console.log(error.message));
 
     this.state.getPlaces = false
 
   }
 
-  getPlaceMarkersFunc(){
+  getPlaceMarkersFunc() {
     var key_id = 10
-     this.state.result.map((item) => {
+    this.state.result.map((item) => {
       RNGooglePlaces.lookUpPlaceByID(item.placeID)
-      .then((placeCoords) => {
-        console.log(placeCoords)
+        .then((placeCoords) => {
+          console.log(placeCoords)
           var marker = {
             key: key_id,
-            coordinate : {
+            coordinate: {
               latitude: placeCoords.latitude,
               longitude: placeCoords.longitude,
             },
-            title : placeCoords.name,
-            description : placeCoords.address,
+            title: placeCoords.name,
+            description: placeCoords.address,
             pinColor: "#336CFF",
           };
-<<<<<<< HEAD
           this.state.contents.push(marker);
-          key_id = key_id + 1    
-=======
-          this.state.contents.push(marker)
           key_id = key_id + 1
->>>>>>> 4f2e68128aff6304fdce3547187d1fdd348b57eb
-      })
-      .catch((error) => console.log(error.message));
-   });
-}
+        })
+        .catch((error) => console.log(error.message));
+    });
+  }
 
 
 
@@ -220,7 +215,7 @@ export default class App extends Component<Props> {
       longitude: centroid_coords[1],
     }
 
-     this.openSearchModal(latlng.latitude, latlng.longitude)
+    this.openSearchModal(latlng.latitude, latlng.longitude)
 
 
 
@@ -277,43 +272,31 @@ export default class App extends Component<Props> {
                   pinColor={y.pinColor}
                 />
               ))}
-<<<<<<< HEAD
               {this.state.contents.map((item) => (
                 <Marker
-                key={item.key}
-                coordinate= {item.coordinate}
-                title={item.title}
-                description={item.description}
-                pinColor={item.pinColor}
-              />
-
-
-              ))}
-
-=======
-                {this.state.contents.map(item => (
-                  <Marker
                   key={item.key}
-                  coordinate= {item.coordinate}
+                  coordinate={item.coordinate}
                   title={item.title}
                   description={item.description}
                   pinColor={item.pinColor}
                 />
-                ))}
->>>>>>> 4f2e68128aff6304fdce3547187d1fdd348b57eb
+
+
+              ))}
+
             </MapView>
             <Fab
-                active={this.state.active}
-                direction="down"
-                containerStyle={{ }}
-                style={{ backgroundColor: '#5067FF'}}
-                position="topRight"
-                onPress={() => this.setState({ active: !this.state.active })}>
-                <FontAwesome5 name={"user"} />
-                <Button style={{ backgroundColor: '#34A34F' }}>
-              {/*<FontAwesome5 name={"plus"} />*/}
-                  <Icon name="md-person-add" size={20} color="#EFFFFF"/>
-                </Button>
+              active={this.state.active}
+              direction="down"
+              containerStyle={{}}
+              style={{ backgroundColor: '#5067FF' }}
+              position="topRight"
+              onPress={() => this.setState({ active: !this.state.active })}>
+              <FontAwesome5 name={"user"} />
+              <Button style={{ backgroundColor: '#34A34F' }}>
+                {/*<FontAwesome5 name={"plus"} />*/}
+                <Icon name="md-person-add" size={20} color="#EFFFFF" />
+              </Button>
             </Fab>
 
           </Animated.View>
@@ -342,12 +325,12 @@ export default class App extends Component<Props> {
 
             </View>
             <Content>
-                {this.state.contents.map((item) => (
-                    <ResultCard
-                        name={item.title}
-                        note={item.description}
-                    />
-                ))}
+              {this.state.contents.map((item) => (
+                <ResultCard
+                  name={item.title}
+                  note={item.description}
+                />
+              ))}
             </Content>
           </View>
         </Animated.ScrollView>
