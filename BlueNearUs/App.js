@@ -9,8 +9,8 @@ import ResultCard from './resultCard.js'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons'
 import firebase from 'firebase';
-
-
+var _ = require('lodash');
+const apikey = "AIzaSyBJj7Qjf-xOnVFfIh-vRg3fLd2EP9F2dVk";
 var config = {
   databaseURL: "https://nearus-222717.firebaseio.com",
   projectId: "nearus-222717",
@@ -83,7 +83,7 @@ export default class App extends Component<Props> {
         description: "Welsh-Ryan",
       },
     ],
-
+    data: [],
     centroid: [{
       key: '0',
       coordinate: {
@@ -160,84 +160,119 @@ export default class App extends Component<Props> {
 
 
   //Given channel id, user can add a Name/Lat/Long to that channel
-writeUserData(name,lat,long,id){
-    firebase.database().ref('Users/'+id+'/'+name).set({
-        lat,
-        long,
-        name,
-    }).then((data)=>{
-        //success callback
-        console.log('data ' , data)
-    }).catch((error)=>{
-        //error callback
-        console.log('error ' , error)
+  writeUserData(name, lat, long, id) {
+    firebase.database().ref('Users/' + id + '/' + name).set({
+      lat,
+      long,
+      name,
+    }).then((data) => {
+      //success callback
+      console.log('data ', data)
+    }).catch((error) => {
+      //error callback
+      console.log('error ', error)
     })
-}
+  }
 
 
-//Function that creates empty channel (e.g., BlueTeam) 
-createNewChannel(id) {
-  firebase.database().ref('Users/'+id).set({
-    }).then((data)=>{
-        //success callback
-        console.log('data ' , data)
-    }).catch((error)=>{
-        //error callback
-        console.log('error ' , error)
+  //Function that creates empty channel (e.g., BlueTeam) 
+  createNewChannel(id) {
+    firebase.database().ref('Users/' + id).set({
+    }).then((data) => {
+      //success callback
+      console.log('data ', data)
+    }).catch((error) => {
+      //error callback
+      console.log('error ', error)
     })
-}
+  }
 
-//This function asks for an id, or rather a channel name, and reads every single name and correspond lat/long, placing them into the people field in states
-readUserData(id) {
-    var friends=[];
-    firebase.database().ref('Users/'+id).once('value', function (snapshot) {
-        console.log(snapshot.val())
-        
-        snapshot.forEach((child) => {
-        console.log(child.val().name,child.val().lat, child.val().long);
-        friends.push(child.val()); 
+  //This function asks for an id, or rather a channel name, and reads every single name and correspond lat/long, placing them into the people field in states
+  readUserData(id) {
+    var friends = [];
+    firebase.database().ref('Users/' + id).once('value', function (snapshot) {
+      console.log(snapshot.val())
+
+      snapshot.forEach((child) => {
+        console.log(child.val().name, child.val().lat, child.val().long);
+        friends.push(child.val());
       });
     });
     // this.setState({
     //       people: friends
     //     });
-    this.state.people=friends;
+    this.state.people = friends;
     // console.log(friends);
     console.log(this.state);
-}
+  }
 
 
-//This function updates the lat long of a given person in a channel
-updateSingleData(name,lat,long,id){
-    firebase.database().ref('Users/'+id+'/'+name).update({
-        lat,
-        long,
+  //This function updates the lat long of a given person in a channel
+  updateSingleData(name, lat, long, id) {
+    firebase.database().ref('Users/' + id + '/' + name).update({
+      lat,
+      long,
     });
-}
+  }
 
-//Sample Functions You Can Call with Firebase
-// this.createNewChannel("BlueTeam");
-//   this.writeUserData("Tim", "42.053472", "-87.672652", "BlueTeam");
-//   this.writeUserData("Jordan", "42.058053", "-87.675137", "BlueTeam");
-//   this.writeUserData("Andrew", "42.067079", "-87.692223","BlueTeam");
-//   this.writeUserData("Robbie","42.057989", "-87.675641","BlueTeam");
-//   this.readUserData("BlueTeam");
-//   this.readUserData("AquaTeam");
-//   this.updateSingleData("Andrew", "42.067079", "-87.692224","AquaTeam")
+  //Sample Functions You Can Call with Firebase
+  // this.createNewChannel("BlueTeam");
+  //   this.writeUserData("Tim", "42.053472", "-87.672652", "BlueTeam");
+  //   this.writeUserData("Jordan", "42.058053", "-87.675137", "BlueTeam");
+  //   this.writeUserData("Andrew", "42.067079", "-87.692223","BlueTeam");
+  //   this.writeUserData("Robbie","42.057989", "-87.675641","BlueTeam");
+  //   this.readUserData("BlueTeam");
+  //   this.readUserData("AquaTeam");
+  //   this.updateSingleData("Andrew", "42.067079", "-87.692224","AquaTeam")
 
+  fetchbycategory = (lat, lon, type) => {
+    // type can be: cafe restaurant parking
+    const urlFirst = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=1000&type=${type}&key=${apikey}
+    `
+    fetch(urlFirst)
+      .then(res => {
+        return res.json();
+      })
+      .then(res => {
+        const arrayData = _.uniqBy([...this.state.data, ...res.results], 'id')
+        // console.log(arrayData);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+  }
+
+  fetchpizz = (lat, lon) => {
+    // type can be: cafe restaurant parking
+    const urlFirst = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=pizz&location=${lat},${lon}&radius=500&key=${apikey}
+    `
+    fetch(urlFirst)
+      .then(res => {
+        return res.json();
+      })
+      .then(res => {
+        const arrayData = _.uniqBy([...this.state.data, ...res.results], 'id')
+        console.log(arrayData);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+  }
 
   openSearchModal(lat, lon) {
     if (this.state.getPlaces == true)
-      RNGooglePlaces.getAutocompletePredictions('pizza', {
+      RNGooglePlaces.getAutocompletePredictions('pizz', {
         type: 'establishments',
         latitude: lat,
         longitude: lon,
         radius: 1
       }).then((place) => {
         this.state.result = place;
-        //console.log(place)
+        // console.log(place)
         this.getPlaceMarkersFunc();
-        console.log(this.state.contents)
+        //console.log(this.state.contents)
       }).catch(error => console.log(error.message));
 
     this.state.getPlaces = false
@@ -291,8 +326,8 @@ updateSingleData(name,lat,long,id){
     }
 
     this.openSearchModal(latlng.latitude, latlng.longitude)
-
-
+    this.fetchbycategory(latlng.latitude, latlng.longitude, "restaurant")
+    this.fetchpizz(latlng.latitude, latlng.longitude)
 
     return (
 
