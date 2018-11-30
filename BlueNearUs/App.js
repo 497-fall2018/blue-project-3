@@ -2,12 +2,20 @@ import React, { Component } from 'react';
 import { Image, Dimensions, Platform, StyleSheet, Text, View, ScrollView, FlatList, Animated } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import RNGooglePlaces from 'react-native-google-places';
-import { Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, H3 , Fab} from 'native-base'
+import { Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, H3, Fab } from 'native-base'
 import LinearGradient from 'react-native-linear-gradient'
 import Emoji from 'react-native-emoji';
 import ResultCard from './resultCard.js'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons'
+import firebase from 'firebase';
+var _ = require('lodash');
+const apikey = "AIzaSyBJj7Qjf-xOnVFfIh-vRg3fLd2EP9F2dVk";
+var config = {
+  databaseURL: "https://nearus-222717.firebaseio.com",
+  projectId: "nearus-222717",
+};
+firebase.initializeApp(config);
 
 type Props = {};
 const screen = Dimensions.get('window');
@@ -31,8 +39,8 @@ export default class App extends Component<Props> {
 
   state = {
     active: false,
-    getPlaces:true,
-    contents:[],
+    getPlaces: true,
+    contents: [],
     latitude: null,
     longitude: null,
     user_lat: 42.057989,
@@ -75,7 +83,7 @@ export default class App extends Component<Props> {
         description: "Welsh-Ryan",
       },
     ],
-
+    data: [],
     centroid: [{
       key: '0',
       coordinate: {
@@ -130,7 +138,6 @@ export default class App extends Component<Props> {
     return ([this.rad2degr(lat), this.rad2degr(lng)]);
   }
 
-
   calculateCentroid() {
     var coordinates = [];
     var answer;
@@ -151,46 +158,149 @@ export default class App extends Component<Props> {
     return answer;
   }
 
+
+  //Given channel id, user can add a Name/Lat/Long to that channel
+  writeUserData(name, lat, long, id) {
+    firebase.database().ref('Users/' + id + '/' + name).set({
+      lat,
+      long,
+      name,
+    }).then((data) => {
+      //success callback
+      console.log('data ', data)
+    }).catch((error) => {
+      //error callback
+      console.log('error ', error)
+    })
+  }
+
+
+  //Function that creates empty channel (e.g., BlueTeam) 
+  createNewChannel(id) {
+    firebase.database().ref('Users/' + id).set({
+    }).then((data) => {
+      //success callback
+      console.log('data ', data)
+    }).catch((error) => {
+      //error callback
+      console.log('error ', error)
+    })
+  }
+
+  //This function asks for an id, or rather a channel name, and reads every single name and correspond lat/long, placing them into the people field in states
+  readUserData(id) {
+    var friends = [];
+    firebase.database().ref('Users/' + id).once('value', function (snapshot) {
+      console.log(snapshot.val())
+
+      snapshot.forEach((child) => {
+        console.log(child.val().name, child.val().lat, child.val().long);
+        friends.push(child.val());
+      });
+    });
+    // this.setState({
+    //       people: friends
+    //     });
+    this.state.people = friends;
+    // console.log(friends);
+    console.log(this.state);
+  }
+
+
+  //This function updates the lat long of a given person in a channel
+  updateSingleData(name, lat, long, id) {
+    firebase.database().ref('Users/' + id + '/' + name).update({
+      lat,
+      long,
+    });
+  }
+
+  //Sample Functions You Can Call with Firebase
+  // this.createNewChannel("BlueTeam");
+  //   this.writeUserData("Tim", "42.053472", "-87.672652", "BlueTeam");
+  //   this.writeUserData("Jordan", "42.058053", "-87.675137", "BlueTeam");
+  //   this.writeUserData("Andrew", "42.067079", "-87.692223","BlueTeam");
+  //   this.writeUserData("Robbie","42.057989", "-87.675641","BlueTeam");
+  //   this.readUserData("BlueTeam");
+  //   this.readUserData("AquaTeam");
+  //   this.updateSingleData("Andrew", "42.067079", "-87.692224","AquaTeam")
+
+  fetchbycategory = (lat, lon, type) => {
+    // type can be: cafe restaurant parking
+    const urlFirst = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=1000&type=${type}&key=${apikey}
+    `
+    fetch(urlFirst)
+      .then(res => {
+        return res.json();
+      })
+      .then(res => {
+        const arrayData = _.uniqBy([...this.state.data, ...res.results], 'id')
+        // console.log(arrayData);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+  }
+
+  fetchpizz = (lat, lon) => {
+    // type can be: cafe restaurant parking
+    const urlFirst = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=pizz&location=${lat},${lon}&radius=500&key=${apikey}
+    `
+    fetch(urlFirst)
+      .then(res => {
+        return res.json();
+      })
+      .then(res => {
+        const arrayData = _.uniqBy([...this.state.data, ...res.results], 'id')
+        console.log(arrayData);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+  }
+
   openSearchModal(lat, lon) {
-    if(this.state.getPlaces == true)
-    RNGooglePlaces.getAutocompletePredictions('pizza', {
-      type: 'establishments',
-      latitude: lat,
-      longitude: lon,
-      radius: 1
-    }).then((place) => {
-      this.state.result = place;
-      //console.log(place)
-      this.getPlaceMarkersFunc();
-      console.log(this.state.contents)
-    }).catch(error => console.log(error.message));
+    if (this.state.getPlaces == true)
+      RNGooglePlaces.getAutocompletePredictions('pizz', {
+        type: 'establishments',
+        latitude: lat,
+        longitude: lon,
+        radius: 1
+      }).then((place) => {
+        this.state.result = place;
+        // console.log(place)
+        this.getPlaceMarkersFunc();
+        //console.log(this.state.contents)
+      }).catch(error => console.log(error.message));
 
     this.state.getPlaces = false
 
   }
 
-  getPlaceMarkersFunc(){
+  getPlaceMarkersFunc() {
     var key_id = 10
-     this.state.result.map((item) => {
+    this.state.result.map((item) => {
       RNGooglePlaces.lookUpPlaceByID(item.placeID)
-      .then((placeCoords) => {
-        console.log(placeCoords)
+        .then((placeCoords) => {
+          console.log(placeCoords)
           var marker = {
             key: key_id,
-            coordinate : {
+            coordinate: {
               latitude: placeCoords.latitude,
               longitude: placeCoords.longitude,
             },
-            title : placeCoords.name,
-            description : placeCoords.address,
+            title: placeCoords.name,
+            description: placeCoords.address,
             pinColor: "#336CFF",
           };
-        this.state.contents.push(marker);
-        key_id = key_id + 1
-      })
-      .catch((error) => console.log(error.message));
-   });
-}
+          this.state.contents.push(marker);
+          key_id = key_id + 1
+        })
+        .catch((error) => console.log(error.message));
+    });
+  }
 
 
 
@@ -215,9 +325,9 @@ export default class App extends Component<Props> {
       longitude: centroid_coords[1],
     }
 
-     this.openSearchModal(latlng.latitude, latlng.longitude)
-
-
+    this.openSearchModal(latlng.latitude, latlng.longitude)
+    this.fetchbycategory(latlng.latitude, latlng.longitude, "restaurant")
+    this.fetchpizz(latlng.latitude, latlng.longitude)
 
     return (
 
@@ -330,12 +440,12 @@ export default class App extends Component<Props> {
 
             </View>
             <Content>
-                {this.state.contents.map((item) => (
-                    <ResultCard
-                        name={item.title}
-                        note={item.description}
-                    />
-                ))}
+              {this.state.contents.map((item) => (
+                <ResultCard
+                  name={item.title}
+                  note={item.description}
+                />
+              ))}
             </Content>
           </View>
         </Animated.ScrollView>
