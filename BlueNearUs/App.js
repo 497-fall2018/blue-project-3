@@ -8,6 +8,14 @@ import Emoji from 'react-native-emoji';
 import ResultCard from './resultCard.js'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons'
+import firebase from 'firebase';
+
+
+var config = {
+  databaseURL: "https://nearus-222717.firebaseio.com",
+  projectId: "nearus-222717",
+};
+firebase.initializeApp(config);
 
 type Props = {};
 const screen = Dimensions.get('window');
@@ -130,7 +138,6 @@ export default class App extends Component<Props> {
     return ([this.rad2degr(lat), this.rad2degr(lng)]);
   }
 
-
   calculateCentroid() {
     var coordinates = [];
     var answer;
@@ -150,6 +157,74 @@ export default class App extends Component<Props> {
     //console.log(answer[0], answer[1]);
     return answer;
   }
+
+
+  //Given channel id, user can add a Name/Lat/Long to that channel
+writeUserData(name,lat,long,id){
+    firebase.database().ref('Users/'+id+'/'+name).set({
+        lat,
+        long,
+        name,
+    }).then((data)=>{
+        //success callback
+        console.log('data ' , data)
+    }).catch((error)=>{
+        //error callback
+        console.log('error ' , error)
+    })
+}
+
+
+//Function that creates empty channel (e.g., BlueTeam) 
+createNewChannel(id) {
+  firebase.database().ref('Users/'+id).set({
+    }).then((data)=>{
+        //success callback
+        console.log('data ' , data)
+    }).catch((error)=>{
+        //error callback
+        console.log('error ' , error)
+    })
+}
+
+//This function asks for an id, or rather a channel name, and reads every single name and correspond lat/long, placing them into the people field in states
+readUserData(id) {
+    var friends=[];
+    firebase.database().ref('Users/'+id).once('value', function (snapshot) {
+        console.log(snapshot.val())
+        
+        snapshot.forEach((child) => {
+        console.log(child.val().name,child.val().lat, child.val().long);
+        friends.push(child.val()); 
+      });
+    });
+    // this.setState({
+    //       people: friends
+    //     });
+    this.state.people=friends;
+    // console.log(friends);
+    console.log(this.state);
+}
+
+
+//This function updates the lat long of a given person in a channel
+updateSingleData(name,lat,long,id){
+    firebase.database().ref('Users/'+id+'/'+name).update({
+        lat,
+        long,
+    });
+}
+
+//Sample Functions You Can Call with Firebase
+// this.createNewChannel("BlueTeam");
+//   this.writeUserData("Tim", "42.053472", "-87.672652", "BlueTeam");
+//   this.writeUserData("Jordan", "42.058053", "-87.675137", "BlueTeam");
+//   this.writeUserData("Andrew", "42.067079", "-87.692223","BlueTeam");
+//   this.writeUserData("Robbie","42.057989", "-87.675641","BlueTeam");
+//   this.readUserData("BlueTeam");
+//   this.readUserData("AquaTeam");
+//   this.updateSingleData("Andrew", "42.067079", "-87.692224","AquaTeam")
+
 
   openSearchModal(lat, lon) {
     if (this.state.getPlaces == true)
