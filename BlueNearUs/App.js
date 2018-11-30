@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { Image, Dimensions, Platform, StyleSheet, Text, View, ScrollView, FlatList, Animated } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import RNGooglePlaces from 'react-native-google-places';
-import { Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, Icon, H3 , Fab} from 'native-base'
+import { Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, H3 , Fab} from 'native-base'
 import LinearGradient from 'react-native-linear-gradient'
 import Emoji from 'react-native-emoji';
 import ResultCard from './resultCard.js'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/Ionicons'
 
 type Props = {};
 const screen = Dimensions.get('window');
@@ -290,7 +291,8 @@ export default class App extends Component<Props> {
                 onPress={() => this.setState({ active: !this.state.active })}>
                 <FontAwesome5 name={"user"} />
                 <Button style={{ backgroundColor: '#34A34F' }}>
-                  <FontAwesome5 name={"plus"} />
+              {/*<FontAwesome5 name={"plus"} />*/}
+                  <Icon name="md-person-add" size={20} color="#EFFFFF"/>
                 </Button>
             </Fab>
 
