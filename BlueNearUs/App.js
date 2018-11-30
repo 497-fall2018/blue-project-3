@@ -382,31 +382,36 @@ export default class App extends Component<Props> {
                   pinColor={y.pinColor}
                 />
               ))}
-              {this.state.contents.map((item) => (
+            {this.state.contents.map((item) => (
                 <Marker
-                  key={item.key}
-                  coordinate={item.coordinate}
-                  title={item.title}
-                  description={item.description}
-                  pinColor={item.pinColor}
-                />
-
-
-              ))}
-
+                key={item.key}
+                coordinate= {item.coordinate}
+                title={item.title}
+                description={item.description}
+                pinColor={item.pinColor}
+            />
+            ))}
             </MapView>
             <Fab
-              active={this.state.active}
-              direction="down"
-              containerStyle={{}}
-              style={{ backgroundColor: '#5067FF' }}
-              position="topRight"
-              onPress={() => this.setState({ active: !this.state.active })}>
-              <FontAwesome5 name={"user"} />
-              <Button style={{ backgroundColor: '#34A34F' }}>
-                {/*<FontAwesome5 name={"plus"} />*/}
-                <Icon name="md-person-add" size={20} color="#EFFFFF" />
-              </Button>
+                active={this.state.active}
+                direction="down"
+                containerStyle={{ }}
+                style={{ backgroundColor: '#5067FF'}}
+                position="topRight"
+                onPress={() => this.setState({ active: !this.state.active })}>
+                <FontAwesome5 name={"user"} />
+                <Button style={{ backgroundColor: '#FE5D26' }}>
+                  <Text style={{fontSize: 20, color:"#EFFFFF"}}>A</Text>
+                </Button>
+                <Button style={{ backgroundColor: '#ff00bf' }}>
+                  <Text style={{fontSize: 20, color:"#EFFFFF"}}>B</Text>
+                </Button>
+                <Button style={{ backgroundColor: '#EA2525' }}>
+                  <Text style={{fontSize: 20, color:"#EFFFFF"}}>C</Text>
+                </Button>
+                <Button style={{ backgroundColor: '#34A34F' }}>
+                  <Icon name="md-person-add" size={20} color="#EFFFFF"/>
+                </Button>
             </Fab>
 
           </Animated.View>
