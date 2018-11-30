@@ -61,6 +61,7 @@ export default class App extends Component<Props> {
   // };
   
   state = {
+    people: [],
     data: '',
     showToast: false,
     latitude: null,
@@ -166,7 +167,7 @@ export default class App extends Component<Props> {
     return ([this.rad2degr(lat), this.rad2degr(lng)]);
 }
 
-
+//Given channel id, user can add a Name/Lat/Long to that channel
 writeUserData(name,lat,long,id){
     firebase.database().ref('Users/'+id+'/'+name).set({
         lat,
@@ -182,7 +183,7 @@ writeUserData(name,lat,long,id){
 }
 
 
-//Function that creates empty channel 
+//Function that creates empty channel (e.g., BlueTeam) 
 createNewChannel(id) {
   firebase.database().ref('Users/'+id).set({
     }).then((data)=>{
@@ -194,25 +195,33 @@ createNewChannel(id) {
     })
 }
 
-
+//This function asks for an id, or rather a channel name, and reads every single name and correspond lat/long, placing them into the people field in states
 readUserData(id) {
+    var friends=[];
     firebase.database().ref('Users/'+id).once('value', function (snapshot) {
         console.log(snapshot.val())
         
         snapshot.forEach((child) => {
-        console.log(child.val().name,child.val().lat, child.val().long); 
+        console.log(child.val().name,child.val().lat, child.val().long);
+        friends.push(child.val()); 
       });
     });
+    // this.setState({
+    //       people: friends
+    //     });
+    this.state.people=friends;
+    // console.log(friends);
+    console.log(this.state);
 }
 
 
-
-// updateSingleData(name,lat,long){
-//     firebase.database().ref('Users/').update({
-//         lat,
-//         long,
-//     });
-// }
+//This function updates the lat long of a given person in a channel
+updateSingleData(name,lat,long,id){
+    firebase.database().ref('Users/'+id+'/'+name).update({
+        lat,
+        long,
+    });
+}
 
 
 
@@ -252,6 +261,7 @@ componentDidMount = () => {
 
   this.readUserData("BlueTeam");
   this.readUserData("AquaTeam");
+  this.updateSingleData("Andrew", "42.067079", "-87.692224","AquaTeam")
       // GET People
     //   fetch('http://hinckley.cs.northwestern.edu/~rbi054/nearus_get.php').then(
     //   function(response) {
