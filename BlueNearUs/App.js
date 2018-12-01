@@ -486,6 +486,7 @@ export default class App extends Component<Props> {
                   note={item.description}
                   icon={item.icon}
                   pic={item.photo}
+                  rating={item.rating}
                 />
               ))}
             </Content>
