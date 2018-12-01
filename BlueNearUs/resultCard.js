@@ -10,9 +10,9 @@ const style = StyleSheet.create({
 
 class ResultCard extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state={
+        this.state = {
             isrc: "https://www.dairyherd.com/sites/default/files/Pan%20Pizza%20Hut.jpg",
             name: "Name",
             note: "Note",
@@ -21,36 +21,36 @@ class ResultCard extends Component {
 
     render() {
         return (<Card>
-                <CardItem>
-                    <Left>
-                        <Thumbnail source={{ uri: 'http://www.stickpng.com/assets/images/5842997fa6515b1e0ad75adf.png' }} />
-                        <Body>
+            <CardItem>
+                <Left>
+                    <Thumbnail source={{ uri: this.props.icon }} />
+                    <Body>
                         <Text style={style.bold}>{this.props.name}</Text>
                         <Text note>{this.props.note}</Text>
-                        </Body>
-                    </Left>
-                </CardItem>
-                <CardItem cardBody>
-                    <Image source={{ uri: this.state.isrc }} style={{ height: 200, width: null, flex: 1 }} />
-                </CardItem>
-                {/*<CardItem>*/}
-                    {/*<Left>*/}
-                        {/*<Button transparent>*/}
-                            {/*/!* <Icon active name="thumbs-up" /> *!/*/}
-                            {/*<Text>12 Likes</Text>*/}
-                        {/*</Button>*/}
-                    {/*</Left>*/}
-                    {/*<Body>*/}
-                    {/*<Button transparent>*/}
-                        {/*/!* <Icon active name="chatbubbles" /> *!/*/}
-                        {/*<Text>4 Comments</Text>*/}
-                    {/*</Button>*/}
-                    {/*</Body>*/}
-                    {/*<Right>*/}
-                        {/*<Text>11h ago</Text>*/}
-                    {/*</Right>*/}
-                {/*</CardItem>*/}
-            </Card>)
+                    </Body>
+                </Left>
+            </CardItem>
+            <CardItem cardBody>
+                <Image source={{ uri: this.props.pic }} style={{ height: 200, width: null, flex: 1 }} />
+            </CardItem>
+            {/*<CardItem>*/}
+            {/*<Left>*/}
+            {/*<Button transparent>*/}
+            {/*/!* <Icon active name="thumbs-up" /> *!/*/}
+            {/*<Text>12 Likes</Text>*/}
+            {/*</Button>*/}
+            {/*</Left>*/}
+            {/*<Body>*/}
+            {/*<Button transparent>*/}
+            {/*/!* <Icon active name="chatbubbles" /> *!/*/}
+            {/*<Text>4 Comments</Text>*/}
+            {/*</Button>*/}
+            {/*</Body>*/}
+            {/*<Right>*/}
+            {/*<Text>11h ago</Text>*/}
+            {/*</Right>*/}
+            {/*</CardItem>*/}
+        </Card>)
     }
 }
 

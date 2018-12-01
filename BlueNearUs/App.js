@@ -83,7 +83,6 @@ export default class App extends Component<Props> {
         description: "Welsh-Ryan",
       },
     ],
-    data: [],
     centroid: [{
       key: '0',
       coordinate: {
@@ -226,39 +225,51 @@ export default class App extends Component<Props> {
   //   this.updateSingleData("Andrew", "42.067079", "-87.692224","AquaTeam")
 
   fetchbycategory = (lat, lon, type) => {
+    this.state.result = [];
+    this.state.contents = [];
     // type can be: cafe restaurant parking
     const urlFirst = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=1000&type=${type}&key=${apikey}
     `
-    fetch(urlFirst)
-      .then(res => {
-        return res.json();
-      })
-      .then(res => {
-        const arrayData = _.uniqBy([...this.state.data, ...res.results], 'id')
-        // console.log(arrayData);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    if (this.state.getPlaces == true) {
+      fetch(urlFirst)
+        .then(res => {
+          return res.json();
+        })
+        .then(res => {
 
+          const arrayData = _.uniqBy([...this.state.result, ...res.results], 'id')
+          console.log(arrayData);
+          this.state.result = arrayData;
+
+          this.getPlaceMarkersFunc();
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      this.state.getPlaces = false;
+    }
   }
-
   fetchpizz = (lat, lon) => {
-    // type can be: cafe restaurant parking
-    const urlFirst = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=pizz&location=${lat},${lon}&radius=500&key=${apikey}
+    this.state.result = [];
+    const urlFirst = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=pizza&location=${lat},${lon}&radius=1000&key=${apikey}
     `
-    fetch(urlFirst)
-      .then(res => {
-        return res.json();
-      })
-      .then(res => {
-        const arrayData = _.uniqBy([...this.state.data, ...res.results], 'id')
-        console.log(arrayData);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    if (this.state.getPlaces == true) {
+      fetch(urlFirst)
+        .then(res => {
+          return res.json();
+        })
+        .then(res => {
+          const arrayData = _.uniqBy([...this.state.result, ...res.results], 'id')
+          console.log(arrayData);
+          this.state.result = arrayData;
 
+          this.getPlaceMarkersFunc();
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      this.state.getPlaces = false;
+    }
   }
 
   openSearchModal(lat, lon) {
@@ -280,28 +291,33 @@ export default class App extends Component<Props> {
   }
 
   getPlaceMarkersFunc() {
-    var key_id = 10
+
     this.state.result.map((item) => {
-      RNGooglePlaces.lookUpPlaceByID(item.placeID)
-        .then((placeCoords) => {
-          console.log(placeCoords)
-          var marker = {
-            key: key_id,
-            coordinate: {
-              latitude: placeCoords.latitude,
-              longitude: placeCoords.longitude,
-            },
-            title: placeCoords.name,
-            description: placeCoords.address,
-            pinColor: "#336CFF",
-          };
-          this.state.contents.push(marker);
-          key_id = key_id + 1
-        })
-        .catch((error) => console.log(error.message));
+      const urlphoto = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${item.photos[0].photo_reference}&key=${apikey}`
+
+      var marker = {
+        key: item.id,
+        coordinate: {
+          latitude: item.geometry.location.lat,
+          longitude: item.geometry.location.lng,
+        },
+        photo: urlphoto,
+        rating: item.rating,
+        icon: item.icon,
+        title: item.name,
+        description: item.vicinity,
+        pinColor: "#336CFF",
+      };
+
+      this.state.contents.push(marker);
+
     });
+
   }
 
+  onPressbtn() {
+
+  }
 
 
   render() {
@@ -325,9 +341,9 @@ export default class App extends Component<Props> {
       longitude: centroid_coords[1],
     }
 
-    this.openSearchModal(latlng.latitude, latlng.longitude)
-    this.fetchbycategory(latlng.latitude, latlng.longitude, "restaurant")
-    this.fetchpizz(latlng.latitude, latlng.longitude)
+    //this.openSearchModal(latlng.latitude, latlng.longitude)
+
+    //this.fetchpizz(latlng.latitude, latlng.longitude)
 
     return (
 
@@ -382,36 +398,36 @@ export default class App extends Component<Props> {
                   pinColor={y.pinColor}
                 />
               ))}
-            {this.state.contents.map((item) => (
+              {this.state.contents.map((item) => (
                 <Marker
-                key={item.key}
-                coordinate= {item.coordinate}
-                title={item.title}
-                description={item.description}
-                pinColor={item.pinColor}
-            />
-            ))}
+                  key={item.key}
+                  coordinate={item.coordinate}
+                  title={item.title}
+                  description={item.description}
+                  pinColor={item.pinColor}
+                />
+              ))}
             </MapView>
             <Fab
-                active={this.state.active}
-                direction="down"
-                containerStyle={{ }}
-                style={{ backgroundColor: '#5067FF'}}
-                position="topRight"
-                onPress={() => this.setState({ active: !this.state.active })}>
-                <FontAwesome5 name={"user"} />
-                <Button style={{ backgroundColor: '#FE5D26' }}>
-                  <Text style={{fontSize: 20, color:"#EFFFFF"}}>A</Text>
-                </Button>
-                <Button style={{ backgroundColor: '#ff00bf' }}>
-                  <Text style={{fontSize: 20, color:"#EFFFFF"}}>B</Text>
-                </Button>
-                <Button style={{ backgroundColor: '#EA2525' }}>
-                  <Text style={{fontSize: 20, color:"#EFFFFF"}}>C</Text>
-                </Button>
-                <Button style={{ backgroundColor: '#34A34F' }}>
-                  <Icon name="md-person-add" size={20} color="#EFFFFF"/>
-                </Button>
+              active={this.state.active}
+              direction="down"
+              containerStyle={{}}
+              style={{ backgroundColor: '#5067FF' }}
+              position="topRight"
+              onPress={() => this.setState({ active: !this.state.active })}>
+              <FontAwesome5 name={"user"} />
+              <Button style={{ backgroundColor: '#FE5D26' }}>
+                <Text style={{ fontSize: 20, color: "#EFFFFF" }}>A</Text>
+              </Button>
+              <Button style={{ backgroundColor: '#ff00bf' }}>
+                <Text style={{ fontSize: 20, color: "#EFFFFF" }}>B</Text>
+              </Button>
+              <Button style={{ backgroundColor: '#EA2525' }}>
+                <Text style={{ fontSize: 20, color: "#EFFFFF" }}>C</Text>
+              </Button>
+              <Button style={{ backgroundColor: '#34A34F' }}>
+                <Icon name="md-person-add" size={20} color="#EFFFFF" />
+              </Button>
             </Fab>
 
           </Animated.View>
@@ -433,17 +449,43 @@ export default class App extends Component<Props> {
             <Content style={{ alignSelf: 'center', paddingBottom: 20 }}><H3 style={{ color: 'rgb(74,74,74)' }}>Hangout Places</H3></Content>
             <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', height: 80, }}>
 
-              <Button rounded light style={styles.btn}><Emoji name="coffee" style={{ fontSize: 40 }} /></Button>
-              <Button rounded light style={styles.btn}><Emoji name="pizza" style={{ fontSize: 40 }} /></Button>
-              <Button rounded light style={styles.btn}><Emoji name="fork_and_knife" style={{ fontSize: 40 }} /></Button>
-              <Button rounded light style={styles.btn}><Emoji name="parking" style={{ fontSize: 40 }} /></Button>
+              <Button rounded light style={styles.btn}
+                onPress={() => {
+                  this.state.getPlaces = true;
+                  this.fetchbycategory(latlng.latitude, latlng.longitude, "cafe");
+
+                }} >
+                <Emoji name="coffee" style={{ fontSize: 40 }} /></Button>
+              <Button rounded light style={styles.btn}
+                onPress={() => {
+                  this.state.getPlaces = true;
+                  this.fetchpizz(latlng.latitude, latlng.longitude);
+                }}
+              ><Emoji name="pizza" style={{ fontSize: 40 }} /></Button>
+              <Button rounded light style={styles.btn}
+                onPress={() => {
+                  this.state.getPlaces = true;
+                  this.fetchbycategory(latlng.latitude, latlng.longitude, "restaurant");
+
+                }}
+              ><Emoji name="fork_and_knife" style={{ fontSize: 40 }} /></Button>
+              <Button rounded light style={styles.btn}
+                onPress={() => {
+                  this.state.getPlaces = true;
+                  this.fetchbycategory(latlng.latitude, latlng.longitude, "parking");
+
+                }}
+              ><Emoji name="parking" style={{ fontSize: 40 }} /></Button>
 
             </View>
             <Content>
               {this.state.contents.map((item) => (
                 <ResultCard
+                  key={item.id}
                   name={item.title}
                   note={item.description}
+                  icon={item.icon}
+                  pic={item.photo}
                 />
               ))}
             </Content>
