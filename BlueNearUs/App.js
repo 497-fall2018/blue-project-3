@@ -227,8 +227,9 @@ export default class App extends Component<Props> {
   fetchbycategory = (lat, lon, type) => {
     this.state.result = [];
     this.state.contents = [];
+    let distanceorradius = type == "parking" ? "radius=1000" : "rankby=distance"
     // type can be: cafe restaurant parking
-    const urlFirst = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&radius=1000&type=${type}&key=${apikey}
+    const urlFirst = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&${distanceorradius}&type=${type}&key=${apikey}
     `
     if (this.state.getPlaces == true) {
       fetch(urlFirst)
@@ -236,7 +237,7 @@ export default class App extends Component<Props> {
           return res.json();
         })
         .then(res => {
-
+          console.log(res);
           const arrayData = _.uniqBy([...this.state.result, ...res.results], 'id')
           console.log(arrayData);
           this.state.result = arrayData;
@@ -251,6 +252,7 @@ export default class App extends Component<Props> {
   }
   fetchpizz = (lat, lon) => {
     this.state.result = [];
+    this.state.contents = [];
     const urlFirst = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=pizza&location=${lat},${lon}&radius=1000&key=${apikey}
     `
     if (this.state.getPlaces == true) {
