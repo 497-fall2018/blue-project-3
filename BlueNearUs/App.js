@@ -1,27 +1,40 @@
 import React, { Component } from 'react';
-import { Image, Dimensions, Platform, StyleSheet, Text, View, ScrollView, FlatList, Animated } from 'react-native';
+import { TouchableHighlight, Image, Dimensions, Platform, StyleSheet, Text, View, ScrollView, FlatList, Animated } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import RNGooglePlaces from 'react-native-google-places';
-import { Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, H3, Fab } from 'native-base'
+import { Container, Form, Label, Item, Input, Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, H1, H3, Fab } from 'native-base'
 import LinearGradient from 'react-native-linear-gradient'
 import Emoji from 'react-native-emoji';
 import ResultCard from './resultCard.js'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons'
-import firebase from 'firebase';
+var firebase = require("firebase");
+
+import { SafeAreaView, createAppContainer, createStackNavigator, StackActions, NavigationActions } from 'react-navigation';
+
+import Modal from "react-native-modal";
 var _ = require('lodash');
 const apikey = "AIzaSyBJj7Qjf-xOnVFfIh-vRg3fLd2EP9F2dVk";
 var config = {
-  databaseURL: "https://nearus-222717.firebaseio.com",
-  projectId: "nearus-222717",
-};
+  databaseURL: "https://nearusback.firebaseio.com",
+  projectId: "nearusback",
+}
 firebase.initializeApp(config);
 
+const rootref = firebase.database().ref();
 type Props = {};
 const screen = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject
+  },
+  home_container: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+  form: {
+    marginVertical: 50,
+    paddingHorizontal: 20
   },
   btn: {
     width: 60,
@@ -33,11 +46,100 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
 });
-
-
-export default class App extends Component<Props> {
-
+class HomeScreen extends React.Component {
+  static navigationOptions = {
+    header: null
+  }
   state = {
+    username: "",
+    channel: ""
+  }
+  //Function that creates empty channel (e.g., BlueTeam) 
+
+  userExistsCallback(userId, exists) {
+    if (exists) {
+      alert('Channel Name ' + userId + ' exists!');
+    } else {
+      this.createNewChannel(userId);
+      this.dispatchit();
+    }
+  }
+  dispatchit() {
+    this.props.navigation.dispatch(StackActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({
+          routeName: 'Details', params: {
+            channelname: this.state.channel,
+            username: this.state.username
+          }
+        })
+      ],
+    }))
+  }
+  createNewChannel(id) {
+    var ref = firebase.database().ref('Users');
+    ref.child(id).set({
+      name: id
+    }).then((data) => {
+      //success callback
+      console.log('data ', data)
+    }).catch((error) => {
+      //error callback
+      console.log('error ', error)
+    })
+  }
+
+  channelidexist(id) {
+
+    var ref = firebase.database().ref('Users');
+    ref.child(id).once("value", snapshot => {
+      var exists = (snapshot.val() !== null);
+      this.userExistsCallback(id, exists);
+    });
+
+  }
+
+  render() {
+
+    return (
+      <SafeAreaView style={styles.container}>
+        <Container style={styles.home_container}>
+          <Content>
+            <H1 style={{ alignSelf: 'center', top: 50 }}>BlueNearUs</H1>
+            <Form style={styles.form}>
+              <Item floatingLabel>
+                <Label>Meeting name</Label>
+                <Input onChangeText={(text) => this.setState({ channel: text })} />
+              </Item>
+              <Item floatingLabel last>
+                <Label>Your name</Label>
+                <Input onChangeText={(text) => this.setState({ username: text })} />
+              </Item>
+              <Button full rounded style={{ marginTop: 20 }}
+                onPress={() => {
+                  if (this.state.channel != "" && this.state.username != "") {
+                    this.channelidexist(this.state.channel)
+                  }
+
+                }}
+              ><Text style={{ fontSize: 20, color: "#EFFFFF" }}>Enter </Text>
+                <FontAwesome5 name="smile" style={{ fontSize: 20, color: "#EFFFFF" }} />
+              </Button>
+            </Form>
+          </Content>
+        </Container>
+      </SafeAreaView>
+    );
+  }
+}
+
+class DetailsScreen extends Component<Props> {
+  static navigationOptions = {
+    header: null
+  }
+  state = {
+    modalOpen: false,
     active: false,
     getPlaces: true,
     contents: [],
@@ -158,6 +260,24 @@ export default class App extends Component<Props> {
   }
 
 
+
+  //Call Database Functions Within React Lifecycle Methods
+  componentDidMount() {
+    //Sample Functions You Can Call with Firebase
+    // this.createNewChannel("BlueTeam");
+    // this.writeUserData("Tim", "42.053472", "-87.672652", "BlueTeam");
+    // this.writeUserData("Jordan", "42.058053", "-87.675137", "BlueTeam");
+    // this.writeUserData("Andrew", "42.067079", "-87.692223","BlueTeam");
+    // this.writeUserData("Robbie","42.057989", "-87.675641","BlueTeam");
+    //   this.readUserData("BlueTeam");
+    //   this.readUserData("AquaTeam");
+    // this.updateSingleData("Andrew", "42.067079", "-87.692227","AquaTeam")
+    // this.deleteSingleData("Andrew", "BlueTeam");
+
+  }
+
+
+
   //Given channel id, user can add a Name/Lat/Long to that channel
   writeUserData(name, lat, long, id) {
     firebase.database().ref('Users/' + id + '/' + name).set({
@@ -174,7 +294,8 @@ export default class App extends Component<Props> {
   }
 
 
-  //Function that creates empty channel (e.g., BlueTeam) 
+
+  //Function that creates empty channel (e.g., BlueTeam)
   createNewChannel(id) {
     firebase.database().ref('Users/' + id).set({
     }).then((data) => {
@@ -205,6 +326,10 @@ export default class App extends Component<Props> {
     console.log(this.state);
   }
 
+  // This function deletes an individual name
+  deleteSingleData(name, id) {
+    firebase.database().ref('Users/' + id + '/' + name).remove();
+  }
 
   //This function updates the lat long of a given person in a channel
   updateSingleData(name, lat, long, id) {
@@ -214,15 +339,6 @@ export default class App extends Component<Props> {
     });
   }
 
-  //Sample Functions You Can Call with Firebase
-  // this.createNewChannel("BlueTeam");
-  //   this.writeUserData("Tim", "42.053472", "-87.672652", "BlueTeam");
-  //   this.writeUserData("Jordan", "42.058053", "-87.675137", "BlueTeam");
-  //   this.writeUserData("Andrew", "42.067079", "-87.692223","BlueTeam");
-  //   this.writeUserData("Robbie","42.057989", "-87.675641","BlueTeam");
-  //   this.readUserData("BlueTeam");
-  //   this.readUserData("AquaTeam");
-  //   this.updateSingleData("Andrew", "42.067079", "-87.692224","AquaTeam")
 
   fetchbycategory = (lat, lon, type) => {
     this.state.result = [];
@@ -340,12 +456,11 @@ export default class App extends Component<Props> {
 
   }
 
-  onPressbtn() {
-
-  }
-
 
   render() {
+    const { navigation } = this.props;
+    const channel = navigation.getParam('channelname', 'noname');
+    const user = navigation.getParam('username', 'nouser');
     navigator.geolocation.getCurrentPosition(
       (position) => {
         this.setState({
@@ -437,25 +552,39 @@ export default class App extends Component<Props> {
               active={this.state.active}
               direction="down"
               containerStyle={{}}
-              style={{ backgroundColor: '#5067FF' }}
+              style={{ backgroundColor: '#5067FF', top: '30%' }}
               position="topRight"
               onPress={() => this.setState({ active: !this.state.active })}>
               <FontAwesome5 name={"user"} />
-              <Button style={{ backgroundColor: '#FE5D26' }}>
-                <Text style={{ fontSize: 20, color: "#EFFFFF" }}>A</Text>
-              </Button>
-              <Button style={{ backgroundColor: '#ff00bf' }}>
-                <Text style={{ fontSize: 20, color: "#EFFFFF" }}>B</Text>
-              </Button>
-              <Button style={{ backgroundColor: '#EA2525' }}>
-                <Text style={{ fontSize: 20, color: "#EFFFFF" }}>C</Text>
-              </Button>
-              <Button style={{ backgroundColor: '#34A34F' }}>
+              <Button
+                style={{ backgroundColor: '#34A34F', marginTop: "10%" }}
+                onPress={() => this.setState({ modalOpen: true })} >
                 <Icon name="md-person-add" size={20} color="#EFFFFF" />
               </Button>
             </Fab>
-
           </Animated.View>
+
+          <Modal
+            style={{ height: "50%" }}
+            animationType="none"
+            transparent={false}
+            visible={this.state.modalOpen}
+            presentationStyle="formSheet"
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed.');
+            }}>
+            <View style={{ marginTop: 50 }}>
+              <View>
+                <Text>Hello World!</Text>
+                <TouchableHighlight
+                  onPress={() => {
+                    this.setState({ modalOpen: !this.state.modalOpen });
+                  }}>
+                  <Text>Hide Modal</Text>
+                </TouchableHighlight>
+              </View>
+            </View>
+          </Modal>
 
           <View style={{
             transform: [{ translateY: -100 }],
@@ -525,3 +654,15 @@ export default class App extends Component<Props> {
     );
   }
 }
+const AppNavigator = createStackNavigator({
+  Home: {
+    screen: HomeScreen,
+  },
+  Details: {
+    screen: DetailsScreen,
+  },
+}, {
+    initialRouteName: 'Home',
+  });
+
+export default createAppContainer(AppNavigator);
