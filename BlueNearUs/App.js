@@ -158,6 +158,24 @@ export default class App extends Component<Props> {
   }
 
 
+
+  //Call Database Functions Within React Lifecycle Methods
+  componentDidMount() {
+    //Sample Functions You Can Call with Firebase
+    // this.createNewChannel("BlueTeam");
+    // this.writeUserData("Tim", "42.053472", "-87.672652", "BlueTeam");
+    // this.writeUserData("Jordan", "42.058053", "-87.675137", "BlueTeam");
+    // this.writeUserData("Andrew", "42.067079", "-87.692223","BlueTeam");
+    // this.writeUserData("Robbie","42.057989", "-87.675641","BlueTeam");
+  //   this.readUserData("BlueTeam");
+  //   this.readUserData("AquaTeam");
+    // this.updateSingleData("Andrew", "42.067079", "-87.692227","AquaTeam")
+    // this.deleteSingleData("Andrew", "BlueTeam");
+
+  }
+
+
+
   //Given channel id, user can add a Name/Lat/Long to that channel
   writeUserData(name, lat, long, id) {
     firebase.database().ref('Users/' + id + '/' + name).set({
@@ -205,6 +223,10 @@ export default class App extends Component<Props> {
     console.log(this.state);
   }
 
+// This function deletes an individual name
+  deleteSingleData(name, id) {
+    firebase.database().ref('Users/' + id + '/' + name).remove();
+  }
 
   //This function updates the lat long of a given person in a channel
   updateSingleData(name, lat, long, id) {
@@ -213,16 +235,7 @@ export default class App extends Component<Props> {
       long,
     });
   }
-
-  //Sample Functions You Can Call with Firebase
-  // this.createNewChannel("BlueTeam");
-  //   this.writeUserData("Tim", "42.053472", "-87.672652", "BlueTeam");
-  //   this.writeUserData("Jordan", "42.058053", "-87.675137", "BlueTeam");
-  //   this.writeUserData("Andrew", "42.067079", "-87.692223","BlueTeam");
-  //   this.writeUserData("Robbie","42.057989", "-87.675641","BlueTeam");
-  //   this.readUserData("BlueTeam");
-  //   this.readUserData("AquaTeam");
-  //   this.updateSingleData("Andrew", "42.067079", "-87.692224","AquaTeam")
+  
 
   fetchbycategory = (lat, lon, type) => {
     this.state.result = [];
