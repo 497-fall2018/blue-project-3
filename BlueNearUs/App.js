@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Dimensions, Platform, StyleSheet, Text, View, ScrollView, FlatList, Animated } from 'react-native';
+import {TouchableHighlight, Image, Dimensions, Platform, StyleSheet, Text, View, ScrollView, FlatList, Animated } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import RNGooglePlaces from 'react-native-google-places';
 import { Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, H3, Fab } from 'native-base'
@@ -9,6 +9,7 @@ import ResultCard from './resultCard.js'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons'
 import firebase from 'firebase';
+import Modal from "react-native-modal";
 var _ = require('lodash');
 const apikey = "AIzaSyBJj7Qjf-xOnVFfIh-vRg3fLd2EP9F2dVk";
 var config = {
@@ -38,6 +39,7 @@ const styles = StyleSheet.create({
 export default class App extends Component<Props> {
 
   state = {
+    modalOpen: false,
     active: false,
     getPlaces: true,
     contents: [],
@@ -174,7 +176,7 @@ export default class App extends Component<Props> {
   }
 
 
-  //Function that creates empty channel (e.g., BlueTeam) 
+  //Function that creates empty channel (e.g., BlueTeam)
   createNewChannel(id) {
     firebase.database().ref('Users/' + id).set({
     }).then((data) => {
@@ -414,25 +416,39 @@ export default class App extends Component<Props> {
               active={this.state.active}
               direction="down"
               containerStyle={{}}
-              style={{ backgroundColor: '#5067FF' }}
+              style={{ backgroundColor: '#5067FF', top: '30%' }}
               position="topRight"
               onPress={() => this.setState({ active: !this.state.active })}>
               <FontAwesome5 name={"user"} />
-              <Button style={{ backgroundColor: '#FE5D26' }}>
-                <Text style={{ fontSize: 20, color: "#EFFFFF" }}>A</Text>
-              </Button>
-              <Button style={{ backgroundColor: '#ff00bf' }}>
-                <Text style={{ fontSize: 20, color: "#EFFFFF" }}>B</Text>
-              </Button>
-              <Button style={{ backgroundColor: '#EA2525' }}>
-                <Text style={{ fontSize: 20, color: "#EFFFFF" }}>C</Text>
-              </Button>
-              <Button style={{ backgroundColor: '#34A34F' }}>
+              <Button
+                style={{ backgroundColor: '#34A34F', marginTop: "10%" }}
+                onPress={() => this.setState({ modalOpen: true})} >
                 <Icon name="md-person-add" size={20} color="#EFFFFF" />
               </Button>
             </Fab>
+        </Animated.View>
 
-          </Animated.View>
+      <Modal
+          style={{height: "50%"}}
+          animationType="none"
+          transparent={false}
+          visible={this.state.modalOpen}
+          presentationStyle="formSheet"
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+          }}>
+          <View style={{marginTop: 50}}>
+            <View>
+              <Text>Hello World!</Text>
+              <TouchableHighlight
+                onPress={() => {
+                  this.setState({modalOpen: !this.state.modalOpen});
+                }}>
+                <Text>Hide Modal</Text>
+              </TouchableHighlight>
+          </View>
+    </View>
+  </Modal>
 
           <View style={{
             transform: [{ translateY: -100 }],
