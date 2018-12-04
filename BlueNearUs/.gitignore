@@ -33,9 +33,6 @@ local.properties
 # node.js
 #
 
-firebase.json
-.firebaserc
-database.rules.json
 node_modules/
 npm-debug.log
 yarn-error.log
