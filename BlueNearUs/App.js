@@ -2,26 +2,37 @@ import React, { Component } from 'react';
 import { Image, Dimensions, Platform, StyleSheet, Text, View, ScrollView, FlatList, Animated } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import RNGooglePlaces from 'react-native-google-places';
-import { Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, H3, Fab } from 'native-base'
+import { Container, Form, Label, Item, Input, Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, H1, H3, Fab } from 'native-base'
 import LinearGradient from 'react-native-linear-gradient'
 import Emoji from 'react-native-emoji';
 import ResultCard from './resultCard.js'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons'
-import firebase from 'firebase';
+var firebase = require("firebase");
+
+import { SafeAreaView, createAppContainer, createStackNavigator, StackActions, NavigationActions } from 'react-navigation';
 var _ = require('lodash');
 const apikey = "AIzaSyBJj7Qjf-xOnVFfIh-vRg3fLd2EP9F2dVk";
 var config = {
-  databaseURL: "https://nearus-222717.firebaseio.com",
-  projectId: "nearus-222717",
-};
+  databaseURL: "https://nearusback.firebaseio.com",
+  projectId: "nearusback",
+}
 firebase.initializeApp(config);
 
+const rootref = firebase.database().ref();
 type Props = {};
 const screen = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject
+  },
+  home_container: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+  form: {
+    marginVertical: 50,
+    paddingHorizontal: 20
   },
   btn: {
     width: 60,
@@ -33,10 +44,98 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
 });
+class HomeScreen extends React.Component {
+  static navigationOptions = {
+    header: null
+  }
+  state = {
+    username: "",
+    channel: ""
+  }
+  //Function that creates empty channel (e.g., BlueTeam) 
 
+  userExistsCallback(userId, exists) {
+    if (exists) {
+      alert('Channel Name ' + userId + ' exists!');
+    } else {
+      this.createNewChannel(userId);
+      this.dispatchit();
+    }
+  }
+  dispatchit() {
+    this.props.navigation.dispatch(StackActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({
+          routeName: 'Details', params: {
+            channelname: this.state.channel,
+            username: this.state.username
+          }
+        })
+      ],
+    }))
+  }
+  createNewChannel(id) {
+    var ref = firebase.database().ref('Users');
+    ref.child(id).set({
+      name: id
+    }).then((data) => {
+      //success callback
+      console.log('data ', data)
+    }).catch((error) => {
+      //error callback
+      console.log('error ', error)
+    })
+  }
 
-export default class App extends Component<Props> {
+  channelidexist(id) {
 
+    var ref = firebase.database().ref('Users');
+    ref.child(id).once("value", snapshot => {
+      var exists = (snapshot.val() !== null);
+      this.userExistsCallback(id, exists);
+    });
+
+  }
+
+  render() {
+
+    return (
+      <SafeAreaView style={styles.container}>
+        <Container style={styles.home_container}>
+          <Content>
+            <H1 style={{ alignSelf: 'center', top: 50 }}>BlueNearUs</H1>
+            <Form style={styles.form}>
+              <Item floatingLabel>
+                <Label>Meeting name</Label>
+                <Input onChangeText={(text) => this.setState({ channel: text })} />
+              </Item>
+              <Item floatingLabel last>
+                <Label>Your name</Label>
+                <Input onChangeText={(text) => this.setState({ username: text })} />
+              </Item>
+              <Button full rounded style={{ marginTop: 20 }}
+                onPress={() => {
+                  if (this.state.channel != "" && this.state.username != "") {
+                    this.channelidexist(this.state.channel)
+                  }
+
+                }}
+              ><Text style={{ fontSize: 20, color: "#EFFFFF" }}>Enter </Text>
+                <FontAwesome5 name="smile" style={{ fontSize: 20, color: "#EFFFFF" }} />
+              </Button>
+            </Form>
+          </Content>
+        </Container>
+      </SafeAreaView>
+    );
+  }
+}
+
+class DetailsScreen extends Component<Props> {
+  static navigationOptions = {
+    header: null
+  }
   state = {
     active: false,
     getPlaces: true,
@@ -174,17 +273,7 @@ export default class App extends Component<Props> {
   }
 
 
-  //Function that creates empty channel (e.g., BlueTeam) 
-  createNewChannel(id) {
-    firebase.database().ref('Users/' + id).set({
-    }).then((data) => {
-      //success callback
-      console.log('data ', data)
-    }).catch((error) => {
-      //error callback
-      console.log('error ', error)
-    })
-  }
+
 
   //This function asks for an id, or rather a channel name, and reads every single name and correspond lat/long, placing them into the people field in states
   readUserData(id) {
@@ -317,12 +406,11 @@ export default class App extends Component<Props> {
 
   }
 
-  onPressbtn() {
-
-  }
-
 
   render() {
+    const { navigation } = this.props;
+    const channel = navigation.getParam('channelname', 'noname');
+    const user = navigation.getParam('username', 'nouser');
     navigator.geolocation.getCurrentPosition(
       (position) => {
         this.setState({
@@ -500,3 +588,15 @@ export default class App extends Component<Props> {
     );
   }
 }
+const AppNavigator = createStackNavigator({
+  Home: {
+    screen: HomeScreen,
+  },
+  Details: {
+    screen: DetailsScreen,
+  },
+}, {
+    initialRouteName: 'Home',
+  });
+
+export default createAppContainer(AppNavigator);
