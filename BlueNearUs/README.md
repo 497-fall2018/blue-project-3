@@ -27,6 +27,9 @@ npm i react-native-emoji
 #Install react-native-vector-icons
 npm i react-native-vector-icons
 
+#Install react-native-modal
+npm i react-native-modal
+
 #Run on ios emulator
 react-native run-ios
 

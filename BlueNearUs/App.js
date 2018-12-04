@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Dimensions, Platform, StyleSheet, Text, View, ScrollView, FlatList, Animated } from 'react-native';
+import { TouchableHighlight, Image, Dimensions, Platform, StyleSheet, Text, View, ScrollView, FlatList, Animated } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import RNGooglePlaces from 'react-native-google-places';
 import { Container, Form, Label, Item, Input, Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, H1, H3, Fab } from 'native-base'
@@ -11,6 +11,8 @@ import Icon from 'react-native-vector-icons/Ionicons'
 var firebase = require("firebase");
 
 import { SafeAreaView, createAppContainer, createStackNavigator, StackActions, NavigationActions } from 'react-navigation';
+
+import Modal from "react-native-modal";
 var _ = require('lodash');
 const apikey = "AIzaSyBJj7Qjf-xOnVFfIh-vRg3fLd2EP9F2dVk";
 var config = {
@@ -137,6 +139,7 @@ class DetailsScreen extends Component<Props> {
     header: null
   }
   state = {
+    modalOpen: false,
     active: false,
     getPlaces: true,
     contents: [],
@@ -257,6 +260,24 @@ class DetailsScreen extends Component<Props> {
   }
 
 
+
+  //Call Database Functions Within React Lifecycle Methods
+  componentDidMount() {
+    //Sample Functions You Can Call with Firebase
+    // this.createNewChannel("BlueTeam");
+    // this.writeUserData("Tim", "42.053472", "-87.672652", "BlueTeam");
+    // this.writeUserData("Jordan", "42.058053", "-87.675137", "BlueTeam");
+    // this.writeUserData("Andrew", "42.067079", "-87.692223","BlueTeam");
+    // this.writeUserData("Robbie","42.057989", "-87.675641","BlueTeam");
+    //   this.readUserData("BlueTeam");
+    //   this.readUserData("AquaTeam");
+    // this.updateSingleData("Andrew", "42.067079", "-87.692227","AquaTeam")
+    // this.deleteSingleData("Andrew", "BlueTeam");
+
+  }
+
+
+
   //Given channel id, user can add a Name/Lat/Long to that channel
   writeUserData(name, lat, long, id) {
     firebase.database().ref('Users/' + id + '/' + name).set({
@@ -274,6 +295,17 @@ class DetailsScreen extends Component<Props> {
 
 
 
+  //Function that creates empty channel (e.g., BlueTeam)
+  createNewChannel(id) {
+    firebase.database().ref('Users/' + id).set({
+    }).then((data) => {
+      //success callback
+      console.log('data ', data)
+    }).catch((error) => {
+      //error callback
+      console.log('error ', error)
+    })
+  }
 
   //This function asks for an id, or rather a channel name, and reads every single name and correspond lat/long, placing them into the people field in states
   readUserData(id) {
@@ -294,6 +326,10 @@ class DetailsScreen extends Component<Props> {
     console.log(this.state);
   }
 
+  // This function deletes an individual name
+  deleteSingleData(name, id) {
+    firebase.database().ref('Users/' + id + '/' + name).remove();
+  }
 
   //This function updates the lat long of a given person in a channel
   updateSingleData(name, lat, long, id) {
@@ -303,15 +339,6 @@ class DetailsScreen extends Component<Props> {
     });
   }
 
-  //Sample Functions You Can Call with Firebase
-  // this.createNewChannel("BlueTeam");
-  //   this.writeUserData("Tim", "42.053472", "-87.672652", "BlueTeam");
-  //   this.writeUserData("Jordan", "42.058053", "-87.675137", "BlueTeam");
-  //   this.writeUserData("Andrew", "42.067079", "-87.692223","BlueTeam");
-  //   this.writeUserData("Robbie","42.057989", "-87.675641","BlueTeam");
-  //   this.readUserData("BlueTeam");
-  //   this.readUserData("AquaTeam");
-  //   this.updateSingleData("Andrew", "42.067079", "-87.692224","AquaTeam")
 
   fetchbycategory = (lat, lon, type) => {
     this.state.result = [];
@@ -502,25 +529,39 @@ class DetailsScreen extends Component<Props> {
               active={this.state.active}
               direction="down"
               containerStyle={{}}
-              style={{ backgroundColor: '#5067FF' }}
+              style={{ backgroundColor: '#5067FF', top: '30%' }}
               position="topRight"
               onPress={() => this.setState({ active: !this.state.active })}>
               <FontAwesome5 name={"user"} />
-              <Button style={{ backgroundColor: '#FE5D26' }}>
-                <Text style={{ fontSize: 20, color: "#EFFFFF" }}>A</Text>
-              </Button>
-              <Button style={{ backgroundColor: '#ff00bf' }}>
-                <Text style={{ fontSize: 20, color: "#EFFFFF" }}>B</Text>
-              </Button>
-              <Button style={{ backgroundColor: '#EA2525' }}>
-                <Text style={{ fontSize: 20, color: "#EFFFFF" }}>C</Text>
-              </Button>
-              <Button style={{ backgroundColor: '#34A34F' }}>
+              <Button
+                style={{ backgroundColor: '#34A34F', marginTop: "10%" }}
+                onPress={() => this.setState({ modalOpen: true })} >
                 <Icon name="md-person-add" size={20} color="#EFFFFF" />
               </Button>
             </Fab>
-
           </Animated.View>
+
+          <Modal
+            style={{ height: "50%" }}
+            animationType="none"
+            transparent={false}
+            visible={this.state.modalOpen}
+            presentationStyle="formSheet"
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed.');
+            }}>
+            <View style={{ marginTop: 50 }}>
+              <View>
+                <Text>Hello World!</Text>
+                <TouchableHighlight
+                  onPress={() => {
+                    this.setState({ modalOpen: !this.state.modalOpen });
+                  }}>
+                  <Text>Hide Modal</Text>
+                </TouchableHighlight>
+              </View>
+            </View>
+          </Modal>
 
           <View style={{
             transform: [{ translateY: -100 }],
