@@ -228,6 +228,10 @@ export default class App extends Component<Props> {
     this.state.result = [];
     this.state.contents = [];
     let distanceorradius = type == "parking" ? "radius=1000" : "rankby=distance"
+    if (type == "library"){
+      distanceorradius = "radius=900"
+    }
+    
     // type can be: cafe restaurant parking
     const urlFirst = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&${distanceorradius}&type=${type}&key=${apikey}
     `
@@ -238,10 +242,25 @@ export default class App extends Component<Props> {
         })
         .then(res => {
           console.log(res);
+          res
           const arrayData = _.uniqBy([...this.state.result, ...res.results], 'id')
+          console.log("Lib here")
           console.log(arrayData);
+          
+          if(type == "library"){
+            element = -1;
+            for (var i = 0; i < arrayData.length; i++) {
+              if (arrayData[i].place_id ==  "ChIJa3IhiXTQD4gR6EGI1XZr8FA")
+              {
+                element = i;
+                break;
+              }
+            }
+            if (element != -1){
+            arrayData.splice(element, 1);
+            }
+          }
           this.state.result = arrayData;
-
           this.getPlaceMarkersFunc();
         })
         .catch(error => {
@@ -262,6 +281,7 @@ export default class App extends Component<Props> {
         })
         .then(res => {
           const arrayData = _.uniqBy([...this.state.result, ...res.results], 'id')
+          
           console.log(arrayData);
           this.state.result = arrayData;
 
@@ -276,14 +296,15 @@ export default class App extends Component<Props> {
 
   openSearchModal(lat, lon) {
     if (this.state.getPlaces == true)
-      RNGooglePlaces.getAutocompletePredictions('pizz', {
+      RNGooglePlaces.getAutocompletePredictions('mudd', {
         type: 'establishments',
         latitude: lat,
         longitude: lon,
         radius: 1
       }).then((place) => {
         this.state.result = place;
-        // console.log(place)
+        console.log("Place")
+        console.log(place)
         this.getPlaceMarkersFunc();
         //console.log(this.state.contents)
       }).catch(error => console.log(error.message));
@@ -295,7 +316,9 @@ export default class App extends Component<Props> {
   getPlaceMarkersFunc() {
 
     this.state.result.map((item) => {
-      const urlphoto = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${item.photos[0].photo_reference}&key=${apikey}`
+      try{
+        urlphoto = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${item.photos[0].photo_reference}&key=${apikey}`
+      }catch(error){ return}
 
       var marker = {
         key: item.id,
@@ -343,7 +366,7 @@ export default class App extends Component<Props> {
       longitude: centroid_coords[1],
     }
 
-    //this.openSearchModal(latlng.latitude, latlng.longitude)
+    //this.openSearchModal(42.0581, 87.6744)
 
     //this.fetchpizz(latlng.latitude, latlng.longitude)
 
@@ -461,16 +484,18 @@ export default class App extends Component<Props> {
               <Button rounded light style={styles.btn}
                 onPress={() => {
                   this.state.getPlaces = true;
-                  this.fetchpizz(latlng.latitude, latlng.longitude);
-                }}
-              ><Emoji name="pizza" style={{ fontSize: 40 }} /></Button>
-              <Button rounded light style={styles.btn}
-                onPress={() => {
-                  this.state.getPlaces = true;
                   this.fetchbycategory(latlng.latitude, latlng.longitude, "restaurant");
 
                 }}
               ><Emoji name="fork_and_knife" style={{ fontSize: 40 }} /></Button>
+              
+              <Button rounded light style={styles.btn}
+                onPress={() => {
+                  this.state.getPlaces = true;
+                  this.fetchbycategory(latlng.latitude, latlng.longitude, "library");
+                }}
+              ><Emoji name="books" style={{ fontSize: 40 }} /></Button>
+
               <Button rounded light style={styles.btn}
                 onPress={() => {
                   this.state.getPlaces = true;
