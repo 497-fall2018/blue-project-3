@@ -719,6 +719,10 @@ class DetailsScreen extends Component<Props> {
                   }}>
                   <Icon name="md-close" size={20} style={{color: 'lightgrey', top: -115, left: -80, position: 'absolute'}}/>
                 </TouchableHighlight>
+              {/*<Button block onPress={() => this.added()}> USE THIS TO RENDER MARKERS*/}
+              <Button style={{height: 25}} block onPress={() => console.log('ADDED')}>
+                  <Text style={{color: 'white'}}>Add</Text>
+                </Button>
               </View>
             </View>
           </Modal>
