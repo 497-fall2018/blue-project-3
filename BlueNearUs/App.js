@@ -46,13 +46,15 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
 
-  modal: { backgroundColor: 'white',
-            padding: 22,
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 10,
-            borderColor: 'rgba(0, 0, 0, 0.1)',
-            marginBottom: 200 }
+  modal: {
+    backgroundColor: 'white',
+    padding: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+    marginBottom: 200
+  }
 });
 class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -235,7 +237,7 @@ class DetailsScreen extends Component<Props> {
       pinColor: "#00ff00",
       description: "This is where you are!",
     }],
-    centroid_new:[{
+    centroid_new: [{
       key: '99',
       coordinate: {
         latitude: 42.057806,
@@ -245,7 +247,7 @@ class DetailsScreen extends Component<Props> {
       pinColor: "#00ff00",
       description: "This is where you are!",
     }],
-    
+
 
 
   };
@@ -322,10 +324,10 @@ class DetailsScreen extends Component<Props> {
   componentDidMount() {
     //Sample Functions You Can Call with Firebase
     // this.createNewChannel("BlueTeam");
-    this.writeUserData("Tim", "42.053472", "-87.672652", "BlueTeam");
+    //this.writeUserData("Tim", "42.053472", "-87.672652", "BlueTeam");
     // this.writeUserData("Jordan", "42.058053", "-87.675137", "BlueTeam");
     // this.writeUserData("Andrew", "42.067079", "-87.692223","BlueTeam");
-    this.updateSingleData("Robbi", "42.057989", "-87.675641", "BlueTeam");
+    //this.updateSingleData("Robbi", "42.057989", "-87.675641", "BlueTeam");
     //   this.readUserData("BlueTeam");
     //   this.readUserData("AquaTeam");
     // this.updateSingleData("Andrew", "42.067079", "-87.692227","AquaTeam")
@@ -365,28 +367,42 @@ class DetailsScreen extends Component<Props> {
   }
 
   //This function asks for an id, or rather a channel name, and reads every single name and correspond lat/long, placing them into the people field in states
-  readUserData(id) {
-    var friends = [];
-    firebase.database().ref('Users/' + id).once('value', function (snapshot) {
-      //console.log(snapshot.val())
-      
-      snapshot.forEach((child) => {
-        //console.log(child.val().name, child.val().lat, child.val().long);
-        
-        var friend = {
-          name: child.val().name,
-          coordinate: {
-            latitude: child.val().lat,
-            longitude: child.val().long,
-          }
-        };
-       friends.push(friend);
-      });
-    });    
+  writetopeople(arr) {
+    let friends = []
+    arr.forEach((child) => {
+      let friend = {
+        name: child.name,
+        coordinate: {
+          latitude: child.lat,
+          longitude: child.long,
+        }
+      };
+      friends.push(friend);
+    });
     this.state.people = friends;
     console.log(this.state.people);
-    // console.log(friends);
-    //console.log(this.state.people);
+  }
+
+  readUserData(id) {
+    return firebase.database().ref('Users/' + id).once('value').then(snapshot => {
+      const names = snapshot.val();
+      return Object.keys(names).map(n => Object.assign({}, names[n]));
+    })
+
+  }
+  async waitdata(id, friendName) {
+    var friends = await this.readUserData(id);
+    this.writetopeople(friends);
+    this.state.people.map((item) => {
+      console.log("here")
+      console.log(item)
+      if (item.name === friendName) {
+        coordinate = item.coordinate;
+        console.log("Andrew coordinates")
+        console.log(coordinate)
+      }
+    });
+    console.log(this.state.people); // 10
   }
 
   // This function deletes an individual name
@@ -518,26 +534,25 @@ class DetailsScreen extends Component<Props> {
 
   }
 
-  addFriendMarker(friendName){
+  addFriendMarker(friendName) {
     friendName = "Andrew"
-    if (this.state.refreshMarker == true){    
-      this.readUserData("BlueTeam");
-      console.log((this.state.people))
-      this.state.people.map((item) => {
-        console.log("here")
-        console.log(item)
-        if (item.name === friendName){
-          coordinate = item.coordinate;
-          console.log("Andrew coordinates")
-          console.log(coordinate)
-        }
-      });
+    if (this.state.refreshMarker == true) {
+      this.waitdata("BlueTeam", friendName);
+      // this.state.people.map((item) => {
+      //   console.log("here")
+      //   console.log(item)
+      //   if (item.name === friendName) {
+      //     coordinate = item.coordinate;
+      //     console.log("Andrew coordinates")
+      //     console.log(coordinate)
+      //   }
+      // });
 
       var friend_coordinate = {
-        key : this.state.friendMarkerKey,
-        coordinate : {latitude: "42.067079", longitude: "-87.692223"},
-        title : friendName,
-        description : ""
+        key: this.state.friendMarkerKey,
+        coordinate: { latitude: "42.067079", longitude: "-87.692223" },
+        title: friendName,
+        description: ""
       };
       this.state.friendMarkerKey = this.state.friendMarkerKey + 1
       this.state.friend_markers.push(friend_coordinate)
@@ -581,8 +596,8 @@ class DetailsScreen extends Component<Props> {
     //console.log(this.state.latitude, this.state.longitude);
     centroid_coords = this.calculateCentroid();
     //const latlng = {
-      //latitude: centroid_coords[0],
-      //longitude: centroid_coords[1],
+    //latitude: centroid_coords[0],
+    //longitude: centroid_coords[1],
     //}
 
     return (
@@ -617,7 +632,7 @@ class DetailsScreen extends Component<Props> {
                   description={marker.description}
                 />
               ))}*/}
-              
+
               {this.state.friend_markers.map(marker => (
                 <Marker
                   key={marker.key}
@@ -664,24 +679,26 @@ class DetailsScreen extends Component<Props> {
               position="topRight"
               onPress={() => this.setState({ active: !this.state.active })}>
             <FontAwesome5 name={"user"} />*/}
-              <Button
-                style={{ backgroundColor: '#34A34F',
-                         marginTop: "10%",
-                         position:'absolute',
-                         right: "3%",
-                         height: 20,
-                         width: 50,
-                         borderRadius: 100 }}
-                onPress={() => this.setState({ modalOpen: true })} >
-                <Icon name="md-person-add" style={{left: 13}} size={25} color="#EFFFFF" />
-              </Button>
+            <Button
+              style={{
+                backgroundColor: '#34A34F',
+                marginTop: "10%",
+                position: 'absolute',
+                right: "3%",
+                height: 20,
+                width: 50,
+                borderRadius: 100
+              }}
+              onPress={() => this.setState({ modalOpen: true })} >
+              <Icon name="md-person-add" style={{ left: 13 }} size={25} color="#EFFFFF" />
+            </Button>
             {/*</Fab>*/}
           </Animated.View>
 
           <Modal
             animationType={"none"}
             visible={this.state.modalOpen}>
-            <View style={ styles.modal }>
+            <View style={styles.modal}>
               <View>
                 <Text>Add Friends</Text>
                 <TouchableHighlight
