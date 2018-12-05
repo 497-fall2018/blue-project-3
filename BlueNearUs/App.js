@@ -550,7 +550,7 @@ class DetailsScreen extends Component<Props> {
 
       var friend_coordinate = {
         key: this.state.friendMarkerKey,
-        coordinate: { latitude: "42.067079", longitude: "-87.692223" },
+        coordinate: { latitude: 42.067079, longitude: -87.692223 },
         title: friendName,
         description: ""
       };
