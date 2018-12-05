@@ -61,7 +61,7 @@ class HomeScreen extends React.Component {
       this.updateSinglename(id, this.state.username);
     } else {
       this.createNewChannel(id);
-
+      this.updateSinglename(id, this.state.username);
     }
     this.dispatchit();
   }
