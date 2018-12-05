@@ -56,13 +56,14 @@ class HomeScreen extends React.Component {
   }
   //Function that creates empty channel (e.g., BlueTeam) 
 
-  userExistsCallback(userId, exists) {
+  userExistsCallback(id, exists) {
     if (exists) {
-      alert('Channel Name ' + userId + ' exists!');
+      this.updateSinglename(id, this.state.username);
     } else {
-      this.createNewChannel(userId);
-      this.dispatchit();
+      this.createNewChannel(id);
+
     }
+    this.dispatchit();
   }
   dispatchit() {
     this.props.navigation.dispatch(StackActions.reset({
@@ -77,6 +78,13 @@ class HomeScreen extends React.Component {
       ],
     }))
   }
+  //This function updates the lat long of a given person in a channel
+  updateSinglename(id, name) {
+    firebase.database().ref('Users/' + id + '/' + name).update({
+      name
+    });
+  }
+
   createNewChannel(id) {
     var ref = firebase.database().ref('Users');
     ref.child(id).set({
@@ -99,6 +107,7 @@ class HomeScreen extends React.Component {
     });
 
   }
+
 
   render() {
 
@@ -265,10 +274,10 @@ class DetailsScreen extends Component<Props> {
   componentDidMount() {
     //Sample Functions You Can Call with Firebase
     // this.createNewChannel("BlueTeam");
-    // this.writeUserData("Tim", "42.053472", "-87.672652", "BlueTeam");
+    this.writeUserData("Tim", "42.053472", "-87.672652", "BlueTeam");
     // this.writeUserData("Jordan", "42.058053", "-87.675137", "BlueTeam");
     // this.writeUserData("Andrew", "42.067079", "-87.692223","BlueTeam");
-    // this.writeUserData("Robbie","42.057989", "-87.675641","BlueTeam");
+    this.updateSingleData("Robbi", "42.057989", "-87.675641", "BlueTeam");
     //   this.readUserData("BlueTeam");
     //   this.readUserData("AquaTeam");
     // this.updateSingleData("Andrew", "42.067079", "-87.692227","AquaTeam")
@@ -344,10 +353,10 @@ class DetailsScreen extends Component<Props> {
     this.state.result = [];
     this.state.contents = [];
     let distanceorradius = type == "parking" ? "radius=1000" : "rankby=distance"
-    if (type == "library"){
+    if (type == "library") {
       distanceorradius = "radius=900"
     }
-    
+
     // type can be: cafe restaurant parking
     const urlFirst = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lon}&${distanceorradius}&type=${type}&key=${apikey}
     `
@@ -362,18 +371,17 @@ class DetailsScreen extends Component<Props> {
           const arrayData = _.uniqBy([...this.state.result, ...res.results], 'id')
           console.log("Lib here")
           console.log(arrayData);
-          
-          if(type == "library"){
+
+          if (type == "library") {
             element = -1;
             for (var i = 0; i < arrayData.length; i++) {
-              if (arrayData[i].place_id ==  "ChIJa3IhiXTQD4gR6EGI1XZr8FA")
-              {
+              if (arrayData[i].place_id == "ChIJa3IhiXTQD4gR6EGI1XZr8FA") {
                 element = i;
                 break;
               }
             }
-            if (element != -1){
-            arrayData.splice(element, 1);
+            if (element != -1) {
+              arrayData.splice(element, 1);
             }
           }
           this.state.result = arrayData;
@@ -397,7 +405,7 @@ class DetailsScreen extends Component<Props> {
         })
         .then(res => {
           const arrayData = _.uniqBy([...this.state.result, ...res.results], 'id')
-          
+
           console.log(arrayData);
           this.state.result = arrayData;
 
@@ -432,9 +440,9 @@ class DetailsScreen extends Component<Props> {
   getPlaceMarkersFunc() {
 
     this.state.result.map((item) => {
-      try{
+      try {
         urlphoto = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${item.photos[0].photo_reference}&key=${apikey}`
-      }catch(error){ return}
+      } catch (error) { return }
 
       var marker = {
         key: item.id,
@@ -617,7 +625,7 @@ class DetailsScreen extends Component<Props> {
 
                 }}
               ><Emoji name="fork_and_knife" style={{ fontSize: 40 }} /></Button>
-              
+
               <Button rounded light style={styles.btn}
                 onPress={() => {
                   this.state.getPlaces = true;
