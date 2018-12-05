@@ -30,6 +30,9 @@ npm i react-native-vector-icons
 #Install react-native-modal
 npm i react-native-modal
 
+#Install react-native-form-builder
+npm i react-native-form-builder
+
 #Run on ios emulator
 react-native run-ios
 

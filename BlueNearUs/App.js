@@ -7,7 +7,9 @@ import LinearGradient from 'react-native-linear-gradient'
 import Emoji from 'react-native-emoji';
 import ResultCard from './resultCard.js'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Icon from 'react-native-vector-icons/Ionicons'
+import Icon from 'react-native-vector-icons/Ionicons';
+import GenerateForm from 'react-native-form-builder';
+
 var firebase = require("firebase");
 
 import { SafeAreaView, createAppContainer, createStackNavigator, StackActions, NavigationActions } from 'react-navigation';
@@ -46,6 +48,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
 
+<<<<<<< Updated upstream
   modal: {
     backgroundColor: 'white',
     padding: 22,
@@ -55,6 +58,18 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0, 0, 0, 0.1)',
     marginBottom: 200
   }
+=======
+  modal: { backgroundColor: 'white',
+            padding: 22,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 10,
+            borderColor: 'rgba(0, 0, 0, 0.1)',
+            marginBottom: 200,
+            height: 150,
+            width: 300,
+           }
+>>>>>>> Stashed changes
 });
 class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -700,12 +715,20 @@ class DetailsScreen extends Component<Props> {
             visible={this.state.modalOpen}>
             <View style={styles.modal}>
               <View>
-                <Text>Add Friends</Text>
+                <Text style={{fontSize: 20}}>Add a Friend</Text>
+                <GenerateForm
+                  fields = {[{
+                    type: 'text',
+                    name: 'Name',
+                    required: true,
+                    label: 'Name',
+                  }]
+                }/>
                 <TouchableHighlight
                   onPress={() => {
                     this.setState({ modalOpen: !this.state.modalOpen });
                   }}>
-                  <Text>Hide Modal</Text>
+                  <Icon name="md-close" size={20} style={{color: 'lightgrey', top: -115, left: -80, position: 'absolute'}}/>
                 </TouchableHighlight>
               </View>
             </View>
