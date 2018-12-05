@@ -48,17 +48,6 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
 
-<<<<<<< Updated upstream
-  modal: {
-    backgroundColor: 'white',
-    padding: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
-    marginBottom: 200
-  }
-=======
   modal: { backgroundColor: 'white',
             padding: 22,
             justifyContent: 'center',
@@ -68,8 +57,8 @@ const styles = StyleSheet.create({
             marginBottom: 200,
             height: 150,
             width: 300,
+            left: 20,
            }
->>>>>>> Stashed changes
 });
 class HomeScreen extends React.Component {
   static navigationOptions = {
