@@ -575,6 +575,7 @@ class DetailsScreen extends Component<Props> {
         description: "",
       }]
       this.state.centroid_new = centroid_values;
+      console.log(this.state.centroid_new)
     }
     this.state.refreshMarker = false;
   }
@@ -748,14 +749,14 @@ class DetailsScreen extends Component<Props> {
               <Button rounded light style={styles.btn}
                 onPress={() => {
                   this.state.getPlaces = true;
-                  this.fetchbycategory(latlng.latitude, latlng.longitude, "cafe");
+                  this.fetchbycategory(this.state.centroid_new[0].coordinate.latitude, this.state.centroid_new[0].coordinate.longitude, "cafe");
 
                 }} >
                 <Emoji name="coffee" style={{ fontSize: 40 }} /></Button>
               <Button rounded light style={styles.btn}
                 onPress={() => {
                   this.state.getPlaces = true;
-                  this.fetchbycategory(this.state.centroid_new.coordinate.latitude, this.state.centroid_new.coordinate.longitude, "restaurant");
+                  this.fetchbycategory(this.state.centroid_new[0].coordinate.latitude, this.state.centroid_new[0].coordinate.longitude, "restaurant");
 
                 }}
               ><Emoji name="fork_and_knife" style={{ fontSize: 40 }} /></Button>
@@ -763,14 +764,14 @@ class DetailsScreen extends Component<Props> {
               <Button rounded light style={styles.btn}
                 onPress={() => {
                   this.state.getPlaces = true;
-                  this.fetchbycategory(this.state.centroid_new.coordinate.latitude, this.state.centroid_new.coordinate.longitude, "library");
+                  this.fetchbycategory(this.state.centroid_new[0].coordinate.latitude, this.state.centroid_new[0].coordinate.longitude, "library");
                 }}
               ><Emoji name="books" style={{ fontSize: 40 }} /></Button>
 
               <Button rounded light style={styles.btn}
                 onPress={() => {
                   this.state.getPlaces = true;
-                  this.fetchbycategory(this.state.centroid_new.coordinate.latitude, this.state.centroid_new.coordinate.longitude, "parking");
+                  this.fetchbycategory(this.state.centroid_new.coordinate[0].latitude, this.state.centroid_new.coordinate[0].longitude, "parking");
 
                 }}
               ><Emoji name="parking" style={{ fontSize: 40 }} /></Button>
@@ -804,7 +805,7 @@ const AppNavigator = createStackNavigator({
     screen: DetailsScreen,
   },
 }, {
-    initialRouteName: 'Home',
+    initialRouteName: 'Details',
   });
 
 export default createAppContainer(AppNavigator);
