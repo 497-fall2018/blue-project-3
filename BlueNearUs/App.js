@@ -139,10 +139,23 @@ class DetailsScreen extends Component<Props> {
     header: null
   }
   state = {
+    friendMarkerKey: 1000,
+    refreshMarker: true,
     modalOpen: false,
     active: false,
     getPlaces: true,
+    people: [],
     contents: [],
+    friend_markers: [{
+      key: '99',
+      coordinate: {
+        latitude: 42.057806,
+        longitude: -87.675877,
+      },
+      title: "Your Location",
+      pinColor: "#00ff00",
+      description: "This is where you are!",
+    }],
     latitude: null,
     longitude: null,
     user_lat: 42.057989,
@@ -205,6 +218,17 @@ class DetailsScreen extends Component<Props> {
       pinColor: "#00ff00",
       description: "This is where you are!",
     }],
+    centroid_new:[{
+      key: '99',
+      coordinate: {
+        latitude: 42.057806,
+        longitude: -87.675877,
+      },
+      title: "Your Location",
+      pinColor: "#00ff00",
+      description: "This is where you are!",
+    }],
+    
 
 
   };
@@ -259,6 +283,22 @@ class DetailsScreen extends Component<Props> {
     return answer;
   }
 
+  recalculateCentroid() {
+    var coordinates = [];
+    var answer;
+    var i;
+    for (i = 0; i < this.state.friend_markers.length; i++) {
+      coordinates.push([this.state.friend_markers[i].coordinate.latitude, this.state.friend_markers[i].coordinate.longitude]);
+    }
+    if (this.state.latitude != null && this.state.latitude != null) {
+      coordinates.push([this.state.user_lat, this.state.user_long]);
+    }
+    //console.log("Centroid...");
+    //console.log(coordinates);
+    answer = this.getLatLngCenter(coordinates);
+    //console.log(answer[0], answer[1]);
+    return answer;
+  }
 
 
   //Call Database Functions Within React Lifecycle Methods
@@ -311,19 +351,25 @@ class DetailsScreen extends Component<Props> {
   readUserData(id) {
     var friends = [];
     firebase.database().ref('Users/' + id).once('value', function (snapshot) {
-      console.log(snapshot.val())
-
+      //console.log(snapshot.val())
+      
       snapshot.forEach((child) => {
-        console.log(child.val().name, child.val().lat, child.val().long);
-        friends.push(child.val());
+        //console.log(child.val().name, child.val().lat, child.val().long);
+        
+        var friend = {
+          name: child.val().name,
+          coordinate: {
+            latitude: child.val().lat,
+            longitude: child.val().long,
+          }
+        };
+       friends.push(friend);
       });
-    });
-    // this.setState({
-    //       people: friends
-    //     });
+    });    
     this.state.people = friends;
+    console.log(this.state.people);
     // console.log(friends);
-    console.log(this.state);
+    //console.log(this.state.people);
   }
 
   // This function deletes an individual name
@@ -456,8 +502,50 @@ class DetailsScreen extends Component<Props> {
 
   }
 
+  addFriendMarker(friendName){
+    friendName = "Andrew"
+    if (this.state.refreshMarker == true){    
+      this.readUserData("BlueTeam");
+      console.log((this.state.people))
+      this.state.people.map((item) => {
+        console.log("here")
+        console.log(item)
+        if (item.name === friendName){
+          coordinate = item.coordinate;
+          console.log("Andrew coordinates")
+          console.log(coordinate)
+        }
+      });
+
+      var friend_coordinate = {
+        key : this.state.friendMarkerKey,
+        coordinate : {latitude: "42.067079", longitude: "-87.692223"},
+        title : friendName,
+        description : ""
+      };
+      this.state.friendMarkerKey = this.state.friendMarkerKey + 1
+      this.state.friend_markers.push(friend_coordinate)
+      new_centroid = this.recalculateCentroid()
+      console.log("New centroid")
+      console.log(new_centroid)
+      var centroid_values = [{
+        key: '0',
+        coordinate: {
+          latitude: new_centroid[0],
+          longitude: new_centroid[1],
+        },
+        title: "Your Optimized Hangout Spot!",
+        pinColor: "#8B008B",
+        description: "",
+      }]
+      this.state.centroid_new = centroid_values;
+    }
+    this.state.refreshMarker = false;
+  }
+
 
   render() {
+    this.addFriendMarker()
     const { navigation } = this.props;
     const channel = navigation.getParam('channelname', 'noname');
     const user = navigation.getParam('username', 'nouser');
@@ -476,14 +564,10 @@ class DetailsScreen extends Component<Props> {
 
     //console.log(this.state.latitude, this.state.longitude);
     centroid_coords = this.calculateCentroid();
-    const latlng = {
-      latitude: centroid_coords[0],
-      longitude: centroid_coords[1],
-    }
-
-    //this.openSearchModal(42.0581, 87.6744)
-
-    //this.fetchpizz(latlng.latitude, latlng.longitude)
+    //const latlng = {
+      //latitude: centroid_coords[0],
+      //longitude: centroid_coords[1],
+    //}
 
     return (
 
@@ -509,7 +593,16 @@ class DetailsScreen extends Component<Props> {
               showsCompass={true}
             >
 
-              {this.state.markers.map(marker => (
+              {/*{this.state.markers.map(marker => (
+                <Marker
+                  key={marker.key}
+                  coordinate={marker.coordinate}
+                  title={marker.title}
+                  description={marker.description}
+                />
+              ))}*/}
+              
+              {this.state.friend_markers.map(marker => (
                 <Marker
                   key={marker.key}
                   coordinate={marker.coordinate}
@@ -518,14 +611,13 @@ class DetailsScreen extends Component<Props> {
                 />
               ))}
 
-              {this.state.centroid.map(c => (
+              {this.state.centroid_new.map(c => (
                 <Marker
                   key={c.key}
-                  coordinate={latlng}
+                  coordinate={c.coordinate}
                   title={c.title}
                   description={c.description}
                   pinColor={c.pinColor}
-
                 />
               ))}
 
