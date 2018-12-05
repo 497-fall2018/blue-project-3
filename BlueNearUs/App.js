@@ -163,6 +163,7 @@ class DetailsScreen extends Component<Props> {
     header: null
   }
   state = {
+    newFriendname: "",
     friendMarkerKey: 1000,
     refreshMarker: true,
     modalOpen: false,
@@ -540,7 +541,6 @@ class DetailsScreen extends Component<Props> {
   }
 
   addFriendMarker(friendName) {
-    friendName = "Andrew"
     if (this.state.refreshMarker == true) {
       this.waitdata("BlueTeam", friendName);
       // this.state.people.map((item) => {
@@ -582,7 +582,7 @@ class DetailsScreen extends Component<Props> {
 
 
   render() {
-    this.addFriendMarker()
+    //this.addFriendMarker()
     const { navigation } = this.props;
     const channel = navigation.getParam('channelname', 'noname');
     const user = navigation.getParam('username', 'nouser');
@@ -707,14 +707,11 @@ class DetailsScreen extends Component<Props> {
             <View style={styles.modal}>
               <View>
                 <Text style={{ fontSize: 20 }}>Add a Friend</Text>
-                <GenerateForm
-                  fields={[{
-                    type: 'text',
-                    name: 'Name',
-                    required: true,
-                    label: 'Name',
-                  }]
-                  } />
+                <Form >
+                  <Item >
+                    <Input placeholder="Name" onChangeText={(text) => this.setState({ newFriendname: text })} />
+                  </Item>
+                </Form>
                 <TouchableHighlight
                   onPress={() => {
                     this.setState({ modalOpen: !this.state.modalOpen });
@@ -722,7 +719,10 @@ class DetailsScreen extends Component<Props> {
                   <Icon name="md-close" size={20} style={{ color: 'lightgrey', top: -115, left: -80, position: 'absolute' }} />
                 </TouchableHighlight>
                 {/*<Button block onPress={() => this.added()}> USE THIS TO RENDER MARKERS*/}
-                <Button style={{ height: 25 }} block onPress={() => console.log('ADDED')}>
+                <Button style={{ height: 25 }} block onPress={() => {
+                  this.addFriendMarker(this.state.newFriendname)
+                  this.setState({ modalOpen: !this.state.modalOpen });
+                }}>
                   <Text style={{ color: 'white' }}>Add</Text>
                 </Button>
               </View>
@@ -805,7 +805,7 @@ const AppNavigator = createStackNavigator({
     screen: DetailsScreen,
   },
 }, {
-    initialRouteName: 'Details',
+    initialRouteName: 'Home',
   });
 
 export default createAppContainer(AppNavigator);
