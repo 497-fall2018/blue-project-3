@@ -771,7 +771,7 @@ class DetailsScreen extends Component<Props> {
               <Button rounded light style={styles.btn}
                 onPress={() => {
                   this.state.getPlaces = true;
-                  this.fetchbycategory(this.state.centroid_new.coordinate[0].latitude, this.state.centroid_new[0].coordinate.longitude, "parking");
+                  this.fetchbycategory(this.state.centroid_new[0].coordinate.latitude, this.state.centroid_new[0].coordinate.longitude, "parking");
 
                 }}
               ><Emoji name="parking" style={{ fontSize: 40 }} /></Button>
