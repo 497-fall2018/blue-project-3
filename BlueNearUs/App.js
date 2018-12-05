@@ -48,17 +48,18 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
 
-  modal: { backgroundColor: 'white',
-            padding: 22,
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 10,
-            borderColor: 'rgba(0, 0, 0, 0.1)',
-            marginBottom: 200,
-            height: 150,
-            width: 300,
-            left: 20,
-           }
+  modal: {
+    backgroundColor: 'white',
+    padding: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+    marginBottom: 200,
+    height: 150,
+    width: 300,
+    left: 20,
+  }
 });
 class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -704,24 +705,24 @@ class DetailsScreen extends Component<Props> {
             visible={this.state.modalOpen}>
             <View style={styles.modal}>
               <View>
-                <Text style={{fontSize: 20}}>Add a Friend</Text>
+                <Text style={{ fontSize: 20 }}>Add a Friend</Text>
                 <GenerateForm
-                  fields = {[{
+                  fields={[{
                     type: 'text',
                     name: 'Name',
                     required: true,
                     label: 'Name',
                   }]
-                }/>
+                  } />
                 <TouchableHighlight
                   onPress={() => {
                     this.setState({ modalOpen: !this.state.modalOpen });
                   }}>
-                  <Icon name="md-close" size={20} style={{color: 'lightgrey', top: -115, left: -80, position: 'absolute'}}/>
+                  <Icon name="md-close" size={20} style={{ color: 'lightgrey', top: -115, left: -80, position: 'absolute' }} />
                 </TouchableHighlight>
-              {/*<Button block onPress={() => this.added()}> USE THIS TO RENDER MARKERS*/}
-              <Button style={{height: 25}} block onPress={() => console.log('ADDED')}>
-                  <Text style={{color: 'white'}}>Add</Text>
+                {/*<Button block onPress={() => this.added()}> USE THIS TO RENDER MARKERS*/}
+                <Button style={{ height: 25 }} block onPress={() => console.log('ADDED')}>
+                  <Text style={{ color: 'white' }}>Add</Text>
                 </Button>
               </View>
             </View>
@@ -754,7 +755,7 @@ class DetailsScreen extends Component<Props> {
               <Button rounded light style={styles.btn}
                 onPress={() => {
                   this.state.getPlaces = true;
-                  this.fetchbycategory(latlng.latitude, latlng.longitude, "restaurant");
+                  this.fetchbycategory(this.state.centroid_new.coordinate.latitude, this.state.centroid_new.coordinate.longitude, "restaurant");
 
                 }}
               ><Emoji name="fork_and_knife" style={{ fontSize: 40 }} /></Button>
@@ -762,14 +763,14 @@ class DetailsScreen extends Component<Props> {
               <Button rounded light style={styles.btn}
                 onPress={() => {
                   this.state.getPlaces = true;
-                  this.fetchbycategory(latlng.latitude, latlng.longitude, "library");
+                  this.fetchbycategory(this.state.centroid_new.coordinate.latitude, this.state.centroid_new.coordinate.longitude, "library");
                 }}
               ><Emoji name="books" style={{ fontSize: 40 }} /></Button>
 
               <Button rounded light style={styles.btn}
                 onPress={() => {
                   this.state.getPlaces = true;
-                  this.fetchbycategory(latlng.latitude, latlng.longitude, "parking");
+                  this.fetchbycategory(this.state.centroid_new.coordinate.latitude, this.state.centroid_new.coordinate.longitude, "parking");
 
                 }}
               ><Emoji name="parking" style={{ fontSize: 40 }} /></Button>
