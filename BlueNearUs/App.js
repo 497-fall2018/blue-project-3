@@ -45,6 +45,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     ...StyleSheet.absoluteFillObject,
   },
+
+  modal: { backgroundColor: 'white',
+            padding: 22,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 10,
+            borderColor: 'rgba(0, 0, 0, 0.1)',
+            marginBottom: 200 }
 });
 class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -54,7 +62,7 @@ class HomeScreen extends React.Component {
     username: "",
     channel: ""
   }
-  //Function that creates empty channel (e.g., BlueTeam) 
+  //Function that creates empty channel (e.g., BlueTeam)
 
   userExistsCallback(id, exists) {
     if (exists) {
@@ -556,34 +564,34 @@ class DetailsScreen extends Component<Props> {
                 />
               ))}
             </MapView>
-            <Fab
+            {/*<Fab
               active={this.state.active}
               direction="down"
               containerStyle={{}}
               style={{ backgroundColor: '#5067FF', top: '30%' }}
               position="topRight"
               onPress={() => this.setState({ active: !this.state.active })}>
-              <FontAwesome5 name={"user"} />
+            <FontAwesome5 name={"user"} />*/}
               <Button
-                style={{ backgroundColor: '#34A34F', marginTop: "10%" }}
+                style={{ backgroundColor: '#34A34F',
+                         marginTop: "10%",
+                         position:'absolute',
+                         right: "3%",
+                         height: 20,
+                         width: 50,
+                         borderRadius: 100 }}
                 onPress={() => this.setState({ modalOpen: true })} >
-                <Icon name="md-person-add" size={20} color="#EFFFFF" />
+                <Icon name="md-person-add" style={{left: 13}} size={25} color="#EFFFFF" />
               </Button>
-            </Fab>
+            {/*</Fab>*/}
           </Animated.View>
 
           <Modal
-            style={{ height: "50%" }}
-            animationType="none"
-            transparent={false}
-            visible={this.state.modalOpen}
-            presentationStyle="formSheet"
-            onRequestClose={() => {
-              Alert.alert('Modal has been closed.');
-            }}>
-            <View style={{ marginTop: 50 }}>
+            animationType={"none"}
+            visible={this.state.modalOpen}>
+            <View style={ styles.modal }>
               <View>
-                <Text>Hello World!</Text>
+                <Text>Add Friends</Text>
                 <TouchableHighlight
                   onPress={() => {
                     this.setState({ modalOpen: !this.state.modalOpen });
