@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { TouchableHighlight, Image, Dimensions, Platform, StyleSheet, Text, View, ScrollView, FlatList, Animated } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import RNGooglePlaces from 'react-native-google-places';
-import { Container, Form, Label, Item, Input, Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, H1, H3, Fab } from 'native-base'
+import { Container, Form, Label, Item, Input, Body, Card, Content, CardItem, Right, Left, Thumbnail, Button, H1, H3, Fab, Grid, Col } from 'native-base'
 import LinearGradient from 'react-native-linear-gradient'
 import Emoji from 'react-native-emoji';
 import ResultCard from './resultCard.js'
@@ -50,9 +50,9 @@ const styles = StyleSheet.create({
 
   modal: {
     backgroundColor: 'white',
-    padding: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingTop: 30,
+    // justifyContent: 'center',
+    // alignItems: 'center',
     borderRadius: 10,
     borderColor: 'rgba(0, 0, 0, 0.1)',
     marginBottom: 200,
@@ -400,16 +400,24 @@ class DetailsScreen extends Component<Props> {
   async waitdata(id, friendName) {
     var friends = await this.readUserData(id);
     this.writetopeople(friends);
+    let nameexist = false;
     this.state.people.map((item) => {
       if (item.name === friendName) {
         coordinate = item.coordinate;
         //console.log(coordinate)
+        nameexist = true;
       }
-      
+
     });
-    //console.log("here again")
-    console.log(this.state.people); 
-    this.addFriendMarker(friendName)
+    if (nameexist) {
+      //console.log("here again")
+      console.log(this.state.people);
+      this.addFriendMarker(friendName)
+    } else {
+      alert("No friends match!")
+    }
+
+
   }
 
   // This function deletes an individual name
@@ -548,15 +556,16 @@ class DetailsScreen extends Component<Props> {
       //var coords = { latitude: 42.067079, longitude: -87.692223 }
       var coords = {}
       var desc = ""
-       this.state.people.map((item) => {
-         
-         //console.log(item)
-         if (item.name === friendName) {
+
+      this.state.people.map((item) => {
+
+        //console.log(item)
+        if (item.name === friendName) {
           coords = item.coordinate
           desc = item.description
           //console.log(friendName, coords)
-         }
-       });
+        }
+      });
       //console.log(friendName)
       var friend_coordinate = {
         key: this.state.friendMarkerKey,
@@ -713,28 +722,39 @@ class DetailsScreen extends Component<Props> {
             animationType={"none"}
             visible={this.state.modalOpen}>
             <View style={styles.modal}>
-              <View>
-                <Text style={{ fontSize: 20 }}>Add a Friend</Text>
-                <Form >
-                  <Item >
-                    <Input placeholder="Name" onChangeText={(text) => this.setState({ newFriendname: text })} />
-                  </Item>
-                </Form>
-                <TouchableHighlight
-                  onPress={() => {
-                    this.setState({ modalOpen: !this.state.modalOpen });
-                  }}>
-                  <Icon name="md-close" size={20} style={{ color: 'lightgrey', top: -115, left: -80, position: 'absolute' }} />
-                </TouchableHighlight>
-                {/*<Button block onPress={() => this.added()}> USE THIS TO RENDER MARKERS*/}
-                <Button style={{ height: 25 }} block onPress={() => {
-                  //this.addFriendMarker(this.state.newFriendname)
-                  this.state.refreshMarker = true;
-                  this.waitdata("BlueTeam", this.state.newFriendname);
+              <TouchableHighlight
+                onPress={() => {
                   this.setState({ modalOpen: !this.state.modalOpen });
                 }}>
-                  <Text style={{ color: 'white' }}>Add</Text>
-                </Button>
+                <Icon name="md-close" size={20} style={{ color: 'lightgrey', top: -20, right: 10, position: 'absolute' }} />
+              </TouchableHighlight>
+              <View>
+
+                <Form  >
+                  <H3 style={{ alignSelf: 'center' }} >Add a Friend</H3>
+                  <Grid style={{ marginTop: 10 }}>
+                    <Col style={{ height: 50, marginLeft: 50 }}>
+                      <Item >
+                        <Input placeholder="Name" onChangeText={(text) => this.setState({ newFriendname: text })} />
+                      </Item>
+                    </Col>
+                    <Col style={{ height: 50, marginLeft: 20 }}>
+                      <Button light rounded style={{ padding: 10 }} onPress={() => {
+                        //this.addFriendMarker(this.state.newFriendname)
+                        this.state.refreshMarker = true;
+                        this.waitdata("BlueTeam", this.state.newFriendname);
+                        this.setState({ modalOpen: !this.state.modalOpen });
+                      }}>
+                        <Emoji name="heavy_plus_sign" style={{ fontSize: 20 }} />
+                      </Button>
+                    </Col>
+                  </Grid>
+
+
+                </Form>
+
+                {/*<Button block onPress={() => this.added()}> USE THIS TO RENDER MARKERS*/}
+
               </View>
             </View>
           </Modal>
