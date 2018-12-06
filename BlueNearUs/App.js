@@ -603,6 +603,7 @@ class DetailsScreen extends Component<Props> {
     const user = navigation.getParam('username', 'nouser');
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        this.updateSingleData(user, position.coords.latitude, position.coords.longitude, channel);
         this.setState({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
