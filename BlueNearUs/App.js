@@ -386,7 +386,8 @@ class DetailsScreen extends Component<Props> {
       friends.push(friend);
     });
     this.state.people = friends;
-    console.log(this.state.people);
+    //console.log("Hey I am here")
+    //console.log(this.state.people);
   }
 
   readUserData(id) {
@@ -400,15 +401,15 @@ class DetailsScreen extends Component<Props> {
     var friends = await this.readUserData(id);
     this.writetopeople(friends);
     this.state.people.map((item) => {
-      console.log("here")
-      console.log(item)
       if (item.name === friendName) {
         coordinate = item.coordinate;
-        console.log("Andrew coordinates")
-        console.log(coordinate)
+        //console.log(coordinate)
       }
+      
     });
-    console.log(this.state.people); // 10
+    //console.log("here again")
+    console.log(this.state.people); 
+    this.addFriendMarker(friendName)
   }
 
   // This function deletes an individual name
@@ -542,23 +543,29 @@ class DetailsScreen extends Component<Props> {
 
   addFriendMarker(friendName) {
     if (this.state.refreshMarker == true) {
-      this.waitdata("BlueTeam", friendName);
-      // this.state.people.map((item) => {
-      //   console.log("here")
-      //   console.log(item)
-      //   if (item.name === friendName) {
-      //     coordinate = item.coordinate;
-      //     console.log("Andrew coordinates")
-      //     console.log(coordinate)
-      //   }
-      // });
+      //this.waitdata("BlueTeam", friendName);
 
+      //var coords = { latitude: 42.067079, longitude: -87.692223 }
+      var coords = {}
+      var desc = ""
+       this.state.people.map((item) => {
+         
+         //console.log(item)
+         if (item.name === friendName) {
+          coords = item.coordinate
+          desc = item.description
+          //console.log(friendName, coords)
+         }
+       });
+      //console.log(friendName)
       var friend_coordinate = {
         key: this.state.friendMarkerKey,
-        coordinate: { latitude: 42.067079, longitude: -87.692223 },
+        coordinate: coords,
         title: friendName,
-        description: ""
+        description: desc
       };
+      console.log("New person")
+      console.log(friend_coordinate)
       this.state.friendMarkerKey = this.state.friendMarkerKey + 1
       this.state.friend_markers.push(friend_coordinate)
       new_centroid = this.recalculateCentroid()
@@ -582,7 +589,7 @@ class DetailsScreen extends Component<Props> {
 
 
   render() {
-    //this.addFriendMarker()
+
     const { navigation } = this.props;
     const channel = navigation.getParam('channelname', 'noname');
     const user = navigation.getParam('username', 'nouser');
@@ -720,7 +727,9 @@ class DetailsScreen extends Component<Props> {
                 </TouchableHighlight>
                 {/*<Button block onPress={() => this.added()}> USE THIS TO RENDER MARKERS*/}
                 <Button style={{ height: 25 }} block onPress={() => {
-                  this.addFriendMarker(this.state.newFriendname)
+                  //this.addFriendMarker(this.state.newFriendname)
+                  this.state.refreshMarker = true;
+                  this.waitdata("BlueTeam", this.state.newFriendname);
                   this.setState({ modalOpen: !this.state.modalOpen });
                 }}>
                   <Text style={{ color: 'white' }}>Add</Text>
