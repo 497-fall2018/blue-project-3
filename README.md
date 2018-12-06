@@ -2,6 +2,8 @@
 
 App to locate common places near to multiple people.
 
+![](screen.gif)
+
 Install firebase:
 ```
 npm install firebase --save
