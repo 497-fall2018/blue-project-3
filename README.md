@@ -6,3 +6,7 @@ Install firebase:
 ```
 npm install firebase --save
 ```
+Reset npm cache:
+```
+npm install & npm start --reset cache
+```
