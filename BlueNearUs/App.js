@@ -344,11 +344,12 @@ class DetailsScreen extends Component<Props> {
 
 
   //Given channel id, user can add a Name/Lat/Long to that channel
-  writeUserData(name, lat, long, id) {
+  writeUserData(name, lat, long, id,desc) {
     firebase.database().ref('Users/' + id + '/' + name).set({
       lat,
       long,
       name,
+      desc
     }).then((data) => {
       //success callback
       console.log('data ', data)
@@ -381,7 +382,8 @@ class DetailsScreen extends Component<Props> {
         coordinate: {
           latitude: child.lat,
           longitude: child.long,
-        }
+        },
+        description: child.description
       };
       friends.push(friend);
     });
@@ -548,6 +550,7 @@ class DetailsScreen extends Component<Props> {
       //var coords = { latitude: 42.067079, longitude: -87.692223 }
       var coords = {}
       var desc = ""
+      var found = false
        this.state.people.map((item) => {
          
          //console.log(item)
@@ -555,8 +558,13 @@ class DetailsScreen extends Component<Props> {
           coords = item.coordinate
           desc = item.description
           //console.log(friendName, coords)
+          found = true
          }
        });
+       if (found === false){
+        this.state.refreshMarker = false;
+        return;
+       }
       //console.log(friendName)
       var friend_coordinate = {
         key: this.state.friendMarkerKey,
@@ -814,7 +822,7 @@ const AppNavigator = createStackNavigator({
     screen: DetailsScreen,
   },
 }, {
-    initialRouteName: 'Home',
+    initialRouteName: 'Details',
   });
 
 export default createAppContainer(AppNavigator);
