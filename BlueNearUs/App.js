@@ -823,7 +823,7 @@ const AppNavigator = createStackNavigator({
     screen: DetailsScreen,
   },
 }, {
-    initialRouteName: 'Details',
+    initialRouteName: 'Home',
   });
 
 export default createAppContainer(AppNavigator);
